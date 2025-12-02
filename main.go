@@ -7,22 +7,27 @@ import (
 )
 
 func main() {
-	mux := createHttpMux()
-	addr := "localhost:8080"
-	fmt.Println("Starting local server at", addr)
-	err := http.ListenAndServe(addr, mux)
-	if err != nil {
+	setupServer()
+	launchServer("localhost:8080")
+}
+
+func launchServer(addr string) {
+	fmt.Println("Started local server", addr)
+	fmt.Println("To access the server")
+	fmt.Println("1. Open your web browser")
+	fmt.Println("2. Type \"localhost:8080\" in the address bar")
+
+	if err := http.ListenAndServe(addr, nil); err != nil {
 		fmt.Println(err)
 	}
+
 	fmt.Println("Server stopped")
 }
 
-func createHttpMux() *http.ServeMux {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", handleDefault)
-	return mux
+func setupServer() {
+	http.HandleFunc("/", getIndex)
 }
 
-func handleDefault(w http.ResponseWriter, r *http.Request) {
+func getIndex(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, "Hello, HTTP!\n")
 }
