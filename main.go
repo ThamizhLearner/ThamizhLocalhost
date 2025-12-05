@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
-	"io"
+	"html/template"
 	"net/http"
+
+	script "github.com/ThamizhLearner/Thamizh"
 )
 
 func main() {
@@ -26,8 +28,27 @@ func launchServer(addr string) {
 
 func setupServer() {
 	http.HandleFunc("/", getIndex)
+	fs := http.FileServer(http.Dir("./"))
+	http.Handle("/style.css", fs)
 }
 
+var tmpl = template.Must(template.ParseFiles("index.tmpl"))
+
 func getIndex(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "Hello, HTTP!\n")
+	post := r.Method == http.MethodPost
+
+	seed := struct {
+		InpStr string
+		SylStr string
+	}{"", ""}
+
+	if post {
+		seed.InpStr = r.FormValue("inpStr")
+		str, ok := script.Decode(seed.InpStr)
+		if ok {
+			seed.SylStr = str.SyllabifiedUStr("-")
+		}
+	}
+
+	tmpl.Execute(w, seed)
 }
