@@ -15,6 +15,7 @@ func main() {
 
 func launchServer(addr string) {
 	fmt.Println("Started local server", addr)
+	fmt.Println()
 	fmt.Println("To access the server")
 	fmt.Println("1. Open your web browser")
 	fmt.Println("2. Type \"localhost:8080\" in the address bar")
@@ -28,11 +29,11 @@ func launchServer(addr string) {
 
 func setupServer() {
 	http.HandleFunc("/", getIndex)
-	fs := http.FileServer(http.Dir("./"))
+	fs := http.FileServer(http.Dir("style"))
 	http.Handle("/style.css", fs)
 }
 
-var tmpl = template.Must(template.ParseFiles("index.tmpl"))
+var tmpl = template.Must(template.ParseFiles("tmpls/index.tmpl"))
 
 func getIndex(w http.ResponseWriter, r *http.Request) {
 	post := r.Method == http.MethodPost
