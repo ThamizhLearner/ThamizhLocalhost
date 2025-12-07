@@ -1,3 +1,11 @@
 = Thamizh Localhost
 
-Local server application for Thamizh exploration
+Locally hosted server application for Thamizh exploration.
+
+.Activities
+* [ ] Syllabification
+   ** [x] Word
+   ** [ ] Paragraph (_applied to all the constructions therein_)
+* [ ] Decomposition
+   ** [ ] Word
+   ** [ ] Paragraph (_applied to all the constructions therein_)

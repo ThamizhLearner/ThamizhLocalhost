@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Syllabification</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="MiddlePath">
+	<form method="POST">
+		<input type="text" name="inpStr" placeholder="உள்ளிடவும்" required/>
+		<input type="submit" value="Syllabify" style="padding-left: 20px; padding-right: 20px">
+	</form>
+</div>
+
+{{if .SylStr}}
+	<div class="MiddlePath">
+		<p style="text-align:center">{{.InpStr}}</p>
+		<p style="background-color:white;padding:10px;border-radius:20px">{{.SylStr}}</p>
+	</div>
+{{end}}
+
+</body>
+</html>

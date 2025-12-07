@@ -1,0 +1,26 @@
+body {
+   font-size: 2em;
+   background-color: whitesmoke;
+}
+
+form {
+   font-size: inherit;
+}
+
+.heading {
+   text-align: center;
+}
+
+.MiddlePath {
+   background-color:transparent;
+   display: grid;
+   justify-content: center;
+}
+
+form {
+   font-size: inherit;
+}
+
+input {
+   font-size: inherit;
+}
