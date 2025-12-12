@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<html lang="en">
 <head>
 	<meta charset="utf-8">
 	<title>Syllabification</title>
@@ -7,17 +6,21 @@
 </head>
 <body>
 
-<div class="MiddlePath">
-	<form method="POST">
-		<input type="text" name="inpStr" placeholder="உள்ளிடவும்" required/>
-		<input type="submit" value="Syllabify" style="padding-left: 20px; padding-right: 20px">
-	</form>
-</div>
+<p style="font-size:2em">English syllabification technique applied to Thamizh</p>
+<br/>
+
+<form style="font-size:2em" method="POST">
+	<input type="text" name="inpStr" required style="font-size:inherit"/>
+	<input type="submit" value="Syllabify" style="font-size:inherit;font-family:inherit">
+</form>
 
 {{if .SylStr}}
-	<div class="MiddlePath">
-		<p style="text-align:center">{{.InpStr}}</p>
-		<p style="background-color:white;padding:10px;border-radius:20px">{{.SylStr}}</p>
+	<div>
+		<br/>
+		<span style="font-size:2.5em">{{.InpStr}}</span> <br/>
+		<span>Letter elements: {{.LetterCount}}</span> <br/>
+		<span style="font-size:2.5em">{{.SylStr}}</span> <br/>
+		<span>Syllabic sound elements: {{.SylCount}}</span>
 	</div>
 {{end}}
 

@@ -1,26 +1,14 @@
 body {
-   font-size: 2em;
+   font-family: monospace;
    background-color: whitesmoke;
+   margin: 20px 40px;
 }
 
-form {
-   font-size: inherit;
+* {
+   color:darkblue;
 }
 
-.heading {
-   text-align: center;
-}
-
-.MiddlePath {
-   background-color:transparent;
-   display: grid;
-   justify-content: center;
-}
-
-form {
-   font-size: inherit;
-}
-
-input {
-   font-size: inherit;
+input[type="submit"] {
+   padding-left: 20px;
+   padding-right: 20px;
 }
