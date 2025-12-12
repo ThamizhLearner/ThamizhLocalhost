@@ -6,6 +6,6 @@ Locally hosted server application for Thamizh exploration.
 * [ ] Syllabification
    ** [x] Word
    ** [ ] Paragraph (_applied to all the constructions therein_)
-* [ ] Decomposition
+* [ ] Decomposition (Composition analysis)
    ** [ ] Word
    ** [ ] Paragraph (_applied to all the constructions therein_)

@@ -39,15 +39,18 @@ func getIndex(w http.ResponseWriter, r *http.Request) {
 	post := r.Method == http.MethodPost
 
 	seed := struct {
-		InpStr string
-		SylStr string
-	}{"", ""}
+		InpStr      string
+		LetterCount int
+		SylStr      string
+		SylCount    int
+	}{"", 0, "", 0}
 
 	if post {
 		seed.InpStr = r.FormValue("inpStr")
 		str, ok := script.Decode(seed.InpStr)
 		if ok {
-			seed.SylStr = str.SyllabifiedUStr("-")
+			seed.LetterCount = str.Len()
+			seed.SylStr, seed.SylCount = str.SyllabifiedUStr("-")
 		}
 	}
 
