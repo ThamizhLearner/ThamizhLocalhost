@@ -6,4 +6,27 @@ Locally hosted server application for Thamizh exploration.
 * [ ] Syllabification (https://github.com/ThamizhLearner/ThamizhLibUsage[What is this?])
    ** [x] Word
    ** [ ] Paragraph (_applied to all the constructions therein_)
-* [ ] Word Decomposition (Composition analysis)
+* [ ] Word decomposition (Composition analysis)
+
+---
+== Trying it out
+
+Ensure you have https://go.dev/dl/[go-lang] installed.
+
+. Clone the repository +
+`git clone https://github.com/ThamizhLearner/ThamizhLocalhost`
+
+. Move into the newly created folder +
+`cd ./ThamizhLocalhost`
+
+. Update the dependencies (ThamizhLocalhost needs Thamizh package) +
+`go mod tidy`
+
+*All is set.*
+
+Start the server +
+`go run .`
+
+Follow the instructions as displayed::
+. Open the web browser
+. Enter `localhost:8080` in the address bar to access the local server
