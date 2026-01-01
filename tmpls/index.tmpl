@@ -6,23 +6,7 @@
 </head>
 <body>
 
-<p style="font-size:2em">English syllabification technique applied to Thamizh</p>
-<br/>
-
-<form style="font-size:2em" method="POST">
-	<input type="text" name="inpStr" required style="font-size:inherit"/>
-	<input type="submit" value="Syllabify" style="font-size:inherit;font-family:inherit">
-</form>
-
-{{if .SylStr}}
-	<div>
-		<br/>
-		<span style="font-size:2.5em">{{.InpStr}}</span> <br/>
-		<span>Letter elements: {{.LetterCount}}</span> <br/>
-		<span style="font-size:2.5em">{{.SylStr}}</span> <br/>
-		<span>Syllabic sound elements: {{.SylCount}}</span>
-	</div>
-{{end}}
+{{template "WordSylPanel" .}}
 
 </body>
 </html>
