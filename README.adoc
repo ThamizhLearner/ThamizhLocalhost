@@ -8,7 +8,6 @@ Locally hosted server application for Thamizh exploration.
    ** [ ] Paragraph (_applied to all the constructions therein_)
 * [ ] Word decomposition (Composition analysis)
 
----
 == Trying it out
 
 Ensure you have https://go.dev/dl/[go-lang] installed.

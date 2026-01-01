@@ -33,7 +33,7 @@ func setupServer() {
 	http.Handle("/style.css", fs)
 }
 
-var tmpl = template.Must(template.ParseFiles("tmpls/index.tmpl"))
+var tmpl = template.Must(template.ParseFiles("tmpls/index.tmpl", "tmpls/sylWord.tmpl"))
 
 func getIndex(w http.ResponseWriter, r *http.Request) {
 	post := r.Method == http.MethodPost
