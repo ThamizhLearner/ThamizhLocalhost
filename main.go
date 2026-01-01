@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"strings"
 
 	script "github.com/ThamizhLearner/Thamizh"
 )
@@ -43,7 +44,8 @@ func getIndex(w http.ResponseWriter, r *http.Request) {
 		LetterCount int
 		SylStr      string
 		SylCount    int
-	}{"", 0, "", 0}
+		Graph       string
+	}{"", 0, "", 0, ""}
 
 	if post {
 		seed.InpStr = r.FormValue("inpStr")
@@ -51,8 +53,23 @@ func getIndex(w http.ResponseWriter, r *http.Request) {
 		if ok {
 			seed.LetterCount = str.Len()
 			seed.SylStr, seed.SylCount = str.SyllabifiedUStr("-")
+			seed.Graph = createSylGraph(seed.InpStr, strings.Split(seed.SylStr, "-"))
 		}
 	}
 
 	tmpl.Execute(w, seed)
+}
+
+func createSylGraph(w string, syls []string) string {
+	sb := strings.Builder{}
+	sb.WriteString("graph TB\n")
+	for idx, syl := range syls {
+		if idx == 0 {
+			sb.WriteString(fmt.Sprintf("N[%v] --> ", w))
+		} else {
+			sb.WriteString("N --> ")
+		}
+		sb.WriteString(fmt.Sprintf("N%v[%v]\n", idx, syl))
+	}
+	return sb.String()
 }

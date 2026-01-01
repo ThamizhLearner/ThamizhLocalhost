@@ -1,5 +1,5 @@
 {{define "WordSylPanel"}}
-   <p style="font-size:2em">English syllabification technique applied to Thamizh</p>
+   <p style="font-size:2em">English syllabification technique (applied to Thamizh)</p>
    <br/>
 
    <form style="font-size:2em" method="POST">
@@ -11,9 +11,14 @@
       <div>
          <br/>
          <span style="font-size:2.5em">{{.InpStr}}</span> <br/>
-         <span>Letter elements: {{.LetterCount}}</span> <br/>
+         <span>Letters: {{.LetterCount}}</span> <br/>
          <span style="font-size:2.5em">{{.SylStr}}</span> <br/>
-         <span>Syllabic sound elements: {{.SylCount}}</span>
+         <span>Syllabic sounds: {{.SylCount}}</span>
+      </div>
+
+      <br/> <br/>
+      <div class="mermaid">
+         {{.Graph}}
       </div>
    {{end}}
 {{end}}
