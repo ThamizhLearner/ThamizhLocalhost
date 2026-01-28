@@ -9,11 +9,11 @@ import (
 	script "github.com/ThamizhLearner/Thamizh"
 )
 
-type stylWordActivity struct{}
+type sylWordActivity struct{}
 
-func (a stylWordActivity) GetID() string   { return "StylWord" }
-func (a stylWordActivity) GetDesc() string { return "English style syllabification" }
-func (a stylWordActivity) Respond(w http.ResponseWriter, r *http.Request) {
+func (a sylWordActivity) GetID() string   { return "SylWord" }
+func (a sylWordActivity) GetDesc() string { return "English style syllabification" }
+func (a sylWordActivity) Respond(w http.ResponseWriter, r *http.Request) {
 	post := r.Method == http.MethodPost // GET or POST response
 
 	seed := struct {

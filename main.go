@@ -23,10 +23,11 @@ func launchServer(addr string) {
 }
 
 func setupServer() {
-	http.HandleFunc("/", activityPresenter)
-	http.HandleFunc("/{activity}", activitySelector)
+	http.HandleFunc("GET /", activityPresenter)
+	http.HandleFunc("POST /", activityPresenter)
+	http.HandleFunc("GET /{activity}", activityRequester)
 	fs := http.FileServer(http.Dir("style"))
-	http.Handle("/style.css", fs)
+	http.Handle("GET /style.css", fs)
 }
 
 func activityPresenter(w http.ResponseWriter, r *http.Request) {
@@ -34,7 +35,7 @@ func activityPresenter(w http.ResponseWriter, r *http.Request) {
 	activity.Respond(w, r)
 }
 
-func activitySelector(w http.ResponseWriter, r *http.Request) {
+func activityRequester(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("activity")
 	selectActivityById(id)
 	activityPresenter(w, r)
