@@ -1,4 +1,5 @@
-// Activity register
+// Activity selection
+// General layout split: Activity selection area & Activity interaction area
 
 package main
 
@@ -13,7 +14,8 @@ type Activity interface {
 
 // All available activities
 var activities []Activity = []Activity{
-	stylWordActivity{},
+	sylWordActivity{},
+	sylParaActivity{},
 }
 
 // Currently active activity
@@ -28,5 +30,4 @@ func selectActivityById(id string) {
 			return
 		}
 	}
-	currentActivity = activities[0]
 }

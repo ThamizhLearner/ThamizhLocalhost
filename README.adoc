@@ -18,7 +18,7 @@ Ensure you have https://go.dev/dl/[go-lang] installed.
 . Move into the newly created folder +
 `cd ./ThamizhLocalhost`
 
-. Update the dependencies (ThamizhLocalhost needs Thamizh package) +
+. Update any dependencies +
 `go mod tidy`
 
 *All is set.*
