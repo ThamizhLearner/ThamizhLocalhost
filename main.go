@@ -6,6 +6,10 @@ import (
 )
 
 func main() {
+	startServing()
+}
+
+func startServing() {
 	setupServer()
 	launchServer("localhost:8080")
 }

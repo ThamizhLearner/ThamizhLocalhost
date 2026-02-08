@@ -24,14 +24,12 @@ func (a sylParaActivity) Respond(w http.ResponseWriter, r *http.Request) {
 	if post {
 		seed.InpStr = r.FormValue("inpStr")
 		seed.InpStr = strings.TrimSpace(seed.InpStr)
-		// Separate by space!
-		// Attempt to decode each continuation... and be done!
 		strs := strings.Split(seed.InpStr, " ")
-		for i := 0; i < len(strs); i++ {
-			ustr := strings.Trim(strs[i], "., \n\t")
+		for i, s := range strs {
+			ustr := strings.Trim(s, ".,'-:\"") // Trim away punctuation marks
 			str, ok := script.Decode(ustr)
 			if ok {
-				strs[i], _ = str.SyllabifiedUStr("-")
+				strs[i], _ = str.SyllabifiedUStr("-") // Replace with syllabified version
 			}
 		}
 		seed.SylStr = strings.Join(strs, " | ")
