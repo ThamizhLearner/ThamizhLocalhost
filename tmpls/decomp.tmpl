@@ -1,0 +1,22 @@
+{{define "WordSylPanel"}}
+   <p style="font-size:2.5em">Syntax composition analysis</p>
+   <br/>
+
+   <form method="post" style="font-size:2em">
+      <input type="text" name="inpStr" required style="font-size:inherit"/>
+      <input type="submit" value="Deconstruct" style="font-size:inherit;font-family:inherit"/>
+   </form>
+
+   {{if .ResStrs}}
+      <div>
+         <span style="font-size:3em">{{.InpStr}}</span> <br/>
+         {{range .ResStrs}}
+           <span style="font-size:2em">{{.}}</span> <br/>
+         {{end}}
+         <br/>
+      </div>
+   {{else}}
+      <p>Usage example: Type in "மரங்கள்" to see its composition</p>
+   {{end}}
+
+{{end}}
