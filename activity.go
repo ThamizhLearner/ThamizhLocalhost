@@ -16,6 +16,7 @@ type Activity interface {
 var activities []Activity = []Activity{
 	sylWordActivity{},
 	sylParaActivity{},
+	decompActivity{},
 }
 
 // Currently active activity

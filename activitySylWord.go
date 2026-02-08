@@ -25,7 +25,7 @@ func (a sylWordActivity) Respond(w http.ResponseWriter, r *http.Request) {
 	}{"", 0, "", 0, ""}
 
 	if post {
-		seed.InpStr = r.FormValue("inpStr")
+		seed.InpStr = strings.TrimSpace(r.FormValue("inpStr"))
 		str, ok := script.Decode(seed.InpStr)
 		if ok {
 			seed.LetterCount = str.Len()

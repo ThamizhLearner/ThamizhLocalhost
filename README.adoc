@@ -3,10 +3,12 @@
 Locally hosted server application for Thamizh exploration.
 
 .Activities (Implementation status)
-* [ ] Syllabification (https://github.com/ThamizhLearner/ThamizhLibUsage[What is this?])
+* [x] Syllabification (https://github.com/ThamizhLearner/ThamizhLibUsage[What is this?])
    ** [x] Word
-   ** [ ] Paragraph (_applied to all the constructions therein_)
-* [ ] Word decomposition (Composition analysis)
+   ** [x] Paragraph (_applied to all the constructions therein_)
+* [x] Word decomposition (Composition analysis)
+* [ ] Decomposition rules list
+* [ ] Verb list
 
 == Trying it out
 
@@ -18,7 +20,7 @@ Ensure you have https://go.dev/dl/[go-lang] installed.
 . Move into the newly created folder +
 `cd ./ThamizhLocalhost`
 
-. Update any dependencies +
+. Update dependency linkages +
 `go mod tidy`
 
 *All is set.*
