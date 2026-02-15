@@ -22,7 +22,11 @@ func (a decompActivity) Respond(w http.ResponseWriter, r *http.Request) {
 
 	if post {
 		seed.InpStr = strings.TrimSpace(r.FormValue("inpStr"))
-		seed.ResStrs = decomposition.DecomposeWord(seed.InpStr)
+		seed.ResStrs = append(seed.ResStrs, "---------------------")
+		for _, strs := range decomposition.DecomposeWord(seed.InpStr) {
+			seed.ResStrs = append(seed.ResStrs, strs...)
+			seed.ResStrs = append(seed.ResStrs, "---------------------")
+		}
 	}
 
 	var tmpl = template.Must(template.ParseFiles("tmpls/index.tmpl", "tmpls/decomp.tmpl"))
