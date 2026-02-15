@@ -1,0 +1,62 @@
+;=================================================
+கள்|க்கள்|ங்கள்:ம்|ற்கள்:ல்|ட்கள்:ள்|கள் [remnant=noun=singular] [suffix=noun=plural] (பன்மை விகுதி)
+
+;=================================================
+அ
+அகம்
+அது ; [Pronoun=Lower]
+அம்
+அர்
+அல் [remnant=verb=stem] [suffix=noun=verb] (தொழிற்பெயர் விகுதி) 
+அள்
+அற்ற ; (hope-less, in-capable, w/o)
+அன்
+அவர் ; [Pronoun=Higher]
+அவள் ; [Pronoun=Female]
+அவன் ; [Pronoun=Male]
+
+ஆ ; Verb-neg
+ஆக்
+ஆர்
+ஆல் ; Case=Instrumental
+ஆள்
+ஆறு ; Noun | Suffix=River
+ஆன் ; (come into being)
+ஆன ;
+
+இ
+இட்
+இடம் ; Noun=Location | Case=Locative | Suffix=Place | (absolute place/position, relative placement/positioning)
+இயல் ; Noun
+இருந்து
+இல் ; [Case=Locative]
+இன் ; [Case=Possessive]
+
+ஈ
+
+உ
+உடன் ; Case=Sociative
+உடைய ; Case=Possessive
+உம்
+உற்று ;
+
+ஏ ; Case
+
+ஐ ; Case=Accusative
+
+ஒற்று
+
+ஓடு ; Case=Sociative
+;ஓடு ; [Verb=Command]
+
+
+;=================================================
+கு ; Case=Dative
+கை ; Noun=State
+கொண்டு
+
+தல் [remnant=verb=base] [suffix=noun=verb] (தொழிற்பெயர் விகுதி)
+
+பு ; Noun=Act
+
+மை ; (essential essence, state of essence)

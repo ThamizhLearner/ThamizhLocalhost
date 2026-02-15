@@ -10,32 +10,75 @@ import (
 )
 
 type SuffixTrimmer interface { // Suffix trimming rule [Technically, how it works is not important in itself]
-	GetSuffix() string
-	// Trim the suffix and return the remnant
+	GetSuffix() script.String
+	// Trim the suffix and return the remnant/s
 	Trim(str script.String) []script.String // Note: More than one pathways may come into existence!!!
 }
 
-var Trimmers []SuffixTrimmer
+var Trimmers []SuffixTrimmer = LoadDecompositionRules("decomposition/rules.txt")
 
 func createSuffixTrimmer(s string) SuffixTrimmer {
-	// கள்|க்கள்|ங்கள்:ம்|ற்கள்:ல்|ட்கள்:ள்|கள் [remnant=noun=singular] [suffix=noun=plural] (பன்மை விகுதி)
-	// த்தல் [remnant=verb=?] [suffix=noun=verb] (? விகுதி)
-	// தல் [remnant=verb=base] [suffix=noun=verb] (தொழிற்பெயர் விகுதி)
-	// அல் [remnant=verb=stem] [suffix=noun=verb] (தொழிற்பெயர் விகுதி)
+	subs := strings.Split(s, " ") // Look out for first Space separator
 
-	panic("")
+	if strings.Contains(subs[0], "|") { // Compound-form code
+		subs := strings.Split(subs[0], "|")
+		var substRules []SubstRule
+		for _, s := range subs[1:] {
+			idx := strings.Index(s, ":")
+			if idx == -1 { // got match-trim 'n replace pair
+				sr := SubstRule{matchTrimStr: script.MustDecode(strings.TrimSpace(s)), subsStr: script.MustDecode("")}
+				substRules = append(substRules, sr)
+			} else {
+				sr := SubstRule{
+					matchTrimStr: script.MustDecode(strings.TrimSpace(s[:idx])),
+					subsStr:      script.MustDecode(strings.TrimSpace(s[idx+1:])),
+				}
+				substRules = append(substRules, sr)
+			}
+		}
+		return SuffixTrimRule{name: script.MustDecode(subs[0]), substRules: substRules}
+	}
+
+	sfx := script.MustDecode(subs[0])
+	// For V-Suffix, add trim rules for ய் and வ் forms
+	if sfx.FirstLetter().IsV() {
+		substRules := []SubstRule{
+			{matchTrimStr: script.MustDecode("ய்").Appended(sfx), subsStr: script.MustDecode("")},
+			{matchTrimStr: script.MustDecode("வ்").Appended(sfx), subsStr: script.MustDecode("")},
+		}
+		return SuffixTrimRule{name: sfx, substRules: substRules}
+	}
+
+	// For CV-Suffix, check if we have Strong consonant
+	if sfx.FirstLetter().IsCV() && sfx.FirstLetter().IsStrongVocal() {
+		c, _ := sfx.FirstLetter().SplitCV()
+		substRules := []SubstRule{
+			{matchTrimStr: script.MustDecode(c.String()).Appended(sfx), subsStr: script.MustDecode("")},
+			{matchTrimStr: sfx, subsStr: script.MustDecode("")},
+		}
+		return SuffixTrimRule{name: sfx, substRules: substRules}
+	}
+
+	return SuffixTrimRule{name: sfx}
 }
 
-type SuffixSubstitutionDef struct { // Match 'n trim 'n replace
-	name              string
-	substitutionRules []SubstitutionRule
+func Assert(assertion bool, msg string) {
+	if !assertion {
+		panic(msg)
+	}
 }
 
-func (sfx SuffixSubstitutionDef) GetSuffix() string { return sfx.name }
+// Suffix decomposition rule
+type SuffixTrimRule struct {
+	name       script.String
+	substRules []SubstRule
+}
+
+func (rule SuffixTrimRule) GetSuffix() script.String { return rule.name }
 
 // Trim the suffix and return the remnant
-func (sfx SuffixSubstitutionDef) Trim(str script.String) []script.String {
-	for _, sfxRule := range sfx.substitutionRules {
+func (rule SuffixTrimRule) Trim(str script.String) []script.String {
+	for _, sfxRule := range rule.substRules {
 		res, ok := str.TailTrimmedRaw(sfxRule.matchTrimStr)
 		if !ok {
 			continue
@@ -45,57 +88,64 @@ func (sfx SuffixSubstitutionDef) Trim(str script.String) []script.String {
 		}
 		return []script.String{res}
 	}
+
+	// Additional handling for V-Suffixes
+	sfx := rule.name
+	if sfx.FirstLetter().IsV() {
+		rem, ok := str.TailTrimmed(sfx)
+		if !ok {
+			return nil
+		}
+		return []script.String{rem}
+	}
 	return nil
 }
 
-type SubstitutionRule struct { // match 'n substitute
+func (rule SuffixTrimRule) String() string {
+	if len(rule.substRules) == 0 {
+		return rule.name.String()
+	}
+	sb := strings.Builder{}
+	sb.WriteString(rule.name.String())
+	for _, r := range rule.substRules {
+		fmt.Fprint(&sb, " | ", r.matchTrimStr.String())
+		if r.subsStr.Len() != 0 {
+			fmt.Fprint(&sb, " : ", r.subsStr.String())
+		}
+	}
+	return sb.String()
+}
+
+type SubstRule struct { // match 'n substitute
 	matchTrimStr script.String
 	subsStr      script.String
 }
 
-func NewSuffixSubstitutionRule(matchStr string, subssubstitutionStr string) SubstitutionRule {
-	return SubstitutionRule{
-		matchTrimStr: script.MustDecode(matchStr),
-		subsStr:      script.MustDecode(subssubstitutionStr),
-	}
-}
-
-func NewSingularizationDef() SuffixSubstitutionDef {
-	// கள்|க்கள்|ங்கள்:ம்|ற்கள்:ல்|ட்கள்:ள்|கள் [remnant=noun=singular] [suffix=noun=plural] (பன்மை விகுதி)
-	substitutions := []SubstitutionRule{
-		NewSuffixSubstitutionRule("க்கள்", ""),
-		NewSuffixSubstitutionRule("ங்கள்", "ம்"),
-		NewSuffixSubstitutionRule("ற்கள்", "ல்"),
-		NewSuffixSubstitutionRule("ட்கள்", "ள்"),
-		NewSuffixSubstitutionRule("கள்", ""),
-	}
-	return SuffixSubstitutionDef{name: "கள்", substitutionRules: substitutions}
-}
-
-// கள்|க்கள்|ங்கள்:ம்|ற்கள்:ல்|ட்கள்:ள்|கள் [remnant=noun=singular] [suffix=noun=plural] (பன்மை விகுதி)
-func createOverriddenTrimmerQuick() SuffixTrimmer {
-	panic("")
-}
-
-func loadDecompositionRules(fname string) []SuffixTrimmer {
+func LoadDecompositionRules(fname string) []SuffixTrimmer {
 	// Load and parse the suffix definition file
 	file, err := os.Open(fname)
 	if err != nil {
 		panic(err)
 	}
 	defer file.Close()
+
+	var trimmers []SuffixTrimmer
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		s := strings.TrimSpace(scanner.Text())
-		if len(s) == 0 || s[0] == ';' {
+		if len(s) == 0 || s[0] == ';' { // Skip "empty" lines
 			continue
 		}
-		fmt.Println(s)
-		createSuffixTrimmer(s)
+		trimmers = append(trimmers, createSuffixTrimmer(s))
 	}
 	if err = scanner.Err(); err != nil {
-		fmt.Println(err)
+		panic(err)
 	}
 
-	panic("")
+	// dump trimmers
+	for idx, t := range trimmers {
+		fmt.Println(idx, t)
+	}
+
+	return trimmers
 }
