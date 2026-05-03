@@ -17,6 +17,14 @@ type SuffixTrimmer interface { // Suffix trimming rule [Technically, how it work
 
 var Trimmers []SuffixTrimmer = LoadDecompositionRules("decomposition/rules.txt")
 
+// "த்த்"
+var str_தத = script.MustDecode("த்த்")
+
+// "ம்"
+var str_ம = script.MustDecode("ம்")
+
+var str_empty = script.MustDecode("")
+
 func createSuffixTrimmer(s string) SuffixTrimmer {
 	subs := strings.Split(s, " ") // Look out for first Space separator
 
@@ -26,7 +34,7 @@ func createSuffixTrimmer(s string) SuffixTrimmer {
 		for _, s := range subs[1:] {
 			idx := strings.Index(s, ":")
 			if idx == -1 { // got match-trim 'n replace pair
-				sr := SubstRule{matchTrimStr: script.MustDecode(strings.TrimSpace(s)), subsStr: script.MustDecode("")}
+				sr := SubstRule{matchTrimStr: script.MustDecode(strings.TrimSpace(s)), subsStr: str_empty}
 				substRules = append(substRules, sr)
 			} else {
 				sr := SubstRule{
@@ -39,27 +47,42 @@ func createSuffixTrimmer(s string) SuffixTrimmer {
 		return SuffixTrimRule{name: script.MustDecode(subs[0]), substRules: substRules}
 	}
 
-	sfx := script.MustDecode(subs[0])
+	sfx := script.MustDecode(subs[0]) // (Eg. இல், அம்)
 	// For V-Suffix, add trim rules for ய் and வ் forms
 	if sfx.FirstLetter().IsV() {
 		substRules := []SubstRule{
-			{matchTrimStr: script.MustDecode("ய்").Appended(sfx), subsStr: script.MustDecode("")},
-			{matchTrimStr: script.MustDecode("வ்").Appended(sfx), subsStr: script.MustDecode("")},
+			// (Eg. கோயில் = கோ + இல்)
+			{matchTrimStr: script.MustDecode("ய்").Appended(sfx), subsStr: str_empty},
+			// (Eg. கோவில் = கோ + இல்)
+			{matchTrimStr: script.MustDecode("வ்").Appended(sfx), subsStr: str_empty},
+			// ம் restoration form த்த் (Eg. மாற்றத்தை = மாற்றம் + ஐ)
+			{matchTrimStr: str_தத.Appended(sfx), subsStr: str_ம},
+			// (Eg. மாற்றம் = மாற் + அம்) | Applies to Strong Consonants (க், ச், ட், த், ப், ற்.)
+			{matchTrimStr: script.MustDecode("க்க்").Appended(sfx), subsStr: script.MustDecode("க்")},
+			{matchTrimStr: script.MustDecode("ச்ச்").Appended(sfx), subsStr: script.MustDecode("ச்")},
+			{matchTrimStr: script.MustDecode("ட்ட்").Appended(sfx), subsStr: script.MustDecode("ட்")},
+			{matchTrimStr: script.MustDecode("த்த்").Appended(sfx), subsStr: script.MustDecode("த்")},
+			{matchTrimStr: script.MustDecode("ப்ப்").Appended(sfx), subsStr: script.MustDecode("ப்")},
+			{matchTrimStr: script.MustDecode("ற்ற்").Appended(sfx), subsStr: script.MustDecode("ற்")},
 		}
+
 		return SuffixTrimRule{name: sfx, substRules: substRules}
 	}
 
-	// For CV-Suffix, check if we have Strong consonant
+	// For CV-Suffix, check if we have Strong consonant (Eg. கள், தல்)
 	if sfx.FirstLetter().IsCV() && sfx.FirstLetter().IsStrongVocal() {
 		c, _ := sfx.FirstLetter().SplitCV()
 		substRules := []SubstRule{
-			{matchTrimStr: script.MustDecode(c.String()).Appended(sfx), subsStr: script.MustDecode("")},
-			{matchTrimStr: sfx, subsStr: script.MustDecode("")},
+			{matchTrimStr: script.MustDecode(c.String()).Appended(sfx), subsStr: str_empty},
+			{matchTrimStr: sfx, subsStr: str_empty},
+			// {matchTrimStr: script.MustDecode(c.String()).Appended(sfx), subsStr: script.MustDecode("உ")},
 		}
 		return SuffixTrimRule{name: sfx, substRules: substRules}
 	}
 
-	return SuffixTrimRule{name: sfx}
+	return SuffixTrimRule{name: sfx, substRules: []SubstRule{
+		{matchTrimStr: sfx, subsStr: str_empty},
+	}}
 }
 
 func Assert(assertion bool, msg string) {
@@ -76,29 +99,34 @@ type SuffixTrimRule struct {
 
 func (rule SuffixTrimRule) GetSuffix() script.String { return rule.name }
 
-// Trim the suffix and return the remnant
+// Trim out the suffix and return all the possible trim remnants
 func (rule SuffixTrimRule) Trim(str script.String) []script.String {
-	for _, sfxRule := range rule.substRules {
+	var strs []script.String
+	// Try (raw) matching one options
+	for _, sfxRule := range rule.substRules { // No letter-split trim performed here
 		res, ok := str.TailTrimmedRaw(sfxRule.matchTrimStr)
 		if !ok {
 			continue
 		}
+		// Substitute if there is any substitution specified
 		if sfxRule.subsStr.Len() != 0 {
 			res = res.AppendedRaw(sfxRule.subsStr)
 		}
-		return []script.String{res}
+		strs = append(strs, res)
+
+		break // One rule match only allowed
 	}
 
-	// Additional handling for V-Suffixes
+	// Additional handling for V-Suffixes (requires letter-split trimming) (Eg. இல், அம்)
 	sfx := rule.name
-	if sfx.FirstLetter().IsV() {
+	if sfx.FirstLetter().IsV() { // Letter-split trim performed here
 		rem, ok := str.TailTrimmed(sfx)
 		if !ok {
 			return nil
 		}
-		return []script.String{rem}
+		strs = append(strs, rem)
 	}
-	return nil
+	return strs
 }
 
 func (rule SuffixTrimRule) String() string {
@@ -143,9 +171,9 @@ func LoadDecompositionRules(fname string) []SuffixTrimmer {
 	}
 
 	// dump trimmers
-	for idx, t := range trimmers {
-		fmt.Println(idx, t)
-	}
+	// for idx, t := range trimmers {
+	// 	fmt.Println(idx, t)
+	// }
 
 	return trimmers
 }

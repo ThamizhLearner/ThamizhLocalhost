@@ -1,5 +1,5 @@
 ;=================================================
-கள்|க்கள்|ங்கள்:ம்|ற்கள்:ல்|ட்கள்:ள்|கள் [remnant=noun=singular] [suffix=noun=plural] (பன்மை விகுதி)
+கள்|க்கள்|ங்கள்:ம்|ற்கள்:ல்|ட்கள்:ள்|கள்:ர்கள்|ன் [remnant=noun=singular] [suffix=noun=plural] (பன்மை விகுதி)
 
 ;=================================================
 அ
@@ -34,7 +34,7 @@
 
 ஈ
 
-உ
+;உ
 உடன் ; Case=Sociative
 உடைய ; Case=Possessive
 உம்
@@ -57,6 +57,8 @@
 
 தல் [remnant=verb=base] [suffix=noun=verb] (தொழிற்பெயர் விகுதி)
 
+பார்த்து
 பு ; Noun=Act
 
 மை ; (essential essence, state of essence)
+மொத்தம்
