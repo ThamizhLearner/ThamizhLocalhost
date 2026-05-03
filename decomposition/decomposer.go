@@ -51,20 +51,21 @@ type Decomposition struct { // Fine for single chain!
 
 	// Ordered trim operations
 	// Last trim holds the final remnant (which could not be trimmed further)
-	suffixes []Remnant
+	suffixes []Trim
 }
 
-type Remnant struct { // Note: Source str is not retained (here)!
+type Trim struct { // Note: Source str is not retained (here)!
 	str     script.String // Actual remnant string
 	trimmer SuffixTrimmer // Suffix trimmer (which helped generate the remnant string)
 }
 
-// Simply generates all possible decompositons
+// (API) Simply generates all possible decompositons
 func Decompose(str script.String) []Decomposition {
 	var growingDecomp []Decomposition // Decomposition chains
 	// First let's create some seed decompositions!
-	for _, r := range GetRemnants(str) {
-		growingDecomp = append(growingDecomp, Decomposition{mainStr: str.String(), suffixes: []Remnant{r}})
+	for _, r := range GetPossibleTrims(str) {
+		growingDecomp = append(growingDecomp, Decomposition{mainStr: str.String(), suffixes: []Trim{r}})
+		fmt.Println("seed", str, r.str, r.trimmer.GetSuffix())
 	}
 	// Note: Decomposition chain may grow/split/stop
 	// When all chains stop growing, we're done!
@@ -74,7 +75,7 @@ func Decompose(str script.String) []Decomposition {
 		for decompIdx := range growingDecomp {
 			decomp := &growingDecomp[decompIdx] // Decomposition struct needs to mutate! (to update suffixes list)
 			nstr := decomp.suffixes[len(decomp.suffixes)-1].str
-			remnants := GetRemnants(nstr)
+			remnants := GetPossibleTrims(nstr)
 			if len(remnants) == 0 { // Not "growing" ...
 				continue
 			}
@@ -105,25 +106,38 @@ func Decompose(str script.String) []Decomposition {
 	return growingDecomp
 }
 
-// Simply generates all possible Remnants
-func GetRemnants(str script.String) []Remnant {
-	var remnants []Remnant
+var letter_உ = script.MustDecode("உ")
+
+// Simply generates all possible trims (trim remnant + trimmer used)
+func GetPossibleTrims(str script.String) []Trim {
+	var trims []Trim
 	for _, trimmer := range Trimmers {
-		for _, remnantStr := range trimmer.Trim(str) {
-			len := remnantStr.Len()
-			if len == 0 { // No remnant, skip!
-				break
+		for _, trimmedStr := range trimmer.Trim(str) {
+			len := trimmedStr.Len()
+			if len == 0 { // Input string got fully trimmed out!
+				continue
 			}
-			if len == 1 && remnantStr.FirstLetter().IsC() { // Remnant is a Consonant, ignore!
-				break
+			// Remnant is a single letter which is a Consonant, ignore!
+			if len == 1 && trimmedStr.LastLetter().IsC() {
+				continue
 			}
-			if len >= 2 && remnantStr.LastLetter().IsC() && remnantStr.LetterAt(len-2).IsC() {
-				break
+
+			// Additional trim: If trimmed stem ends with 2 Consonants
+			if len >= 2 && trimmedStr.LastLetter().IsC() && trimmedStr.LetterAt(len-2).IsC() {
+				// If the suffix being trimmed is itself "உ", then we go into an infinite loop
+				if trimmer.GetSuffix().StartsExactWith(letter_உ) && trimmer.GetSuffix().Len() == 1 {
+					continue
+				}
+				tmpStr := trimmedStr.Appended(letter_உ)
+				trims = append(trims, Trim{str: tmpStr, trimmer: trimmer})
+				fmt.Println("Heal", trimmedStr.String(), tmpStr.String())
+				continue // In general, ignore trimmed stem ending with 2 Consonants
 			}
-			remnants = append(remnants, Remnant{str: remnantStr, trimmer: trimmer})
+
+			trims = append(trims, Trim{str: trimmedStr, trimmer: trimmer})
 		}
 	}
-	return remnants
+	return trims
 }
 
 func DecomposeWord(wd string) [][]string {

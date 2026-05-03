@@ -19,7 +19,7 @@ func launchServer(addr string) {
 	fmt.Println()
 	fmt.Println("To access the server")
 	fmt.Println("1. Open your web browser")
-	fmt.Println("2. Type \"localhost:8080\" in the address bar")
+	fmt.Printf("2. Type \"%s\" in the address bar\n", addr)
 
 	if err := http.ListenAndServe(addr, nil); err != nil {
 		fmt.Println(err)
