@@ -27,9 +27,9 @@ func (a sylParaActivity) Respond(w http.ResponseWriter, r *http.Request) {
 		strs := strings.Split(seed.InpStr, " ")
 		for i, s := range strs {
 			ustr := strings.Trim(s, ".,'-:\"") // Trim away punctuation marks
-			str, ok := script.Decode(ustr)
+			str, ok := script.LetterSeqFrom(ustr)
 			if ok {
-				strs[i], _ = str.SyllabifiedUStr("-") // Replace with syllabified version
+				strs[i], _ = script.SyllabifiedUStr(str, "-") // Replace with syllabified version
 			}
 		}
 		seed.SylStr = strings.Join(strs, " | ")

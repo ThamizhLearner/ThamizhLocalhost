@@ -26,10 +26,10 @@ func (a sylWordActivity) Respond(w http.ResponseWriter, r *http.Request) {
 
 	if post {
 		seed.InpStr = strings.TrimSpace(r.FormValue("inpStr"))
-		str, ok := script.Decode(seed.InpStr)
+		str, ok := script.LetterSeqFrom(seed.InpStr)
 		if ok {
 			seed.LetterCount = str.Len()
-			seed.SylStr, seed.SylCount = str.SyllabifiedUStr("-")
+			seed.SylStr, seed.SylCount = script.SyllabifiedUStr(str, "-")
 			seed.Graph = createSylGraph(seed.InpStr, strings.Split(seed.SylStr, "-"))
 		}
 	}

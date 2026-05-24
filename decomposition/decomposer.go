@@ -55,12 +55,12 @@ type Decomposition struct { // Fine for single chain!
 }
 
 type Trim struct { // Note: Source str is not retained (here)!
-	str     script.String // Actual remnant string
-	trimmer SuffixTrimmer // Suffix trimmer (which helped generate the remnant string)
+	str     script.LetterSeq // Actual remnant string
+	trimmer SuffixTrimmer    // Suffix trimmer (which helped generate the remnant string)
 }
 
 // (API) Simply generates all possible decompositons
-func Decompose(str script.String) []Decomposition {
+func Decompose(str script.LetterSeq) []Decomposition {
 	var growingDecomp []Decomposition // Decomposition chains
 	// First let's create some seed decompositions!
 	for _, r := range GetPossibleTrims(str) {
@@ -106,10 +106,10 @@ func Decompose(str script.String) []Decomposition {
 	return growingDecomp
 }
 
-var letter_உ = script.MustDecode("உ")
+var letter_உ = script.MustLetterFrom("உ")
 
 // Simply generates all possible trims (trim remnant + trimmer used)
-func GetPossibleTrims(str script.String) []Trim {
+func GetPossibleTrims(str script.LetterSeq) []Trim {
 	var trims []Trim
 	for _, trimmer := range Trimmers {
 		for _, trimmedStr := range trimmer.Trim(str) {
@@ -118,17 +118,17 @@ func GetPossibleTrims(str script.String) []Trim {
 				continue
 			}
 			// Remnant is a single letter which is a Consonant, ignore!
-			if len == 1 && trimmedStr.LastLetter().IsC() {
+			if len == 1 && trimmedStr.Last().IsC() {
 				continue
 			}
 
 			// Additional trim: If trimmed stem ends with 2 Consonants
-			if len >= 2 && trimmedStr.LastLetter().IsC() && trimmedStr.LetterAt(len-2).IsC() {
+			if len >= 2 && trimmedStr.Last().IsC() && trimmedStr.Nth(len-2).IsC() {
 				// If the suffix being trimmed is itself "உ", then we go into an infinite loop
-				if trimmer.GetSuffix().StartsExactWith(letter_உ) && trimmer.GetSuffix().Len() == 1 {
+				if trimmer.GetSuffix().First().Equals(letter_உ) && trimmer.GetSuffix().Len() == 1 {
 					continue
 				}
-				tmpStr := trimmedStr.Appended(letter_உ)
+				tmpStr := trimmedStr.LetterAppended(letter_உ)
 				trims = append(trims, Trim{str: tmpStr, trimmer: trimmer})
 				fmt.Println("Heal", trimmedStr.String(), tmpStr.String())
 				continue // In general, ignore trimmed stem ending with 2 Consonants
@@ -141,7 +141,7 @@ func GetPossibleTrims(str script.String) []Trim {
 }
 
 func DecomposeWord(wd string) [][]string {
-	str, ok := script.Decode(wd)
+	str, ok := script.LetterSeqFrom(wd)
 	if !ok {
 		return nil
 	}
