@@ -9,6 +9,7 @@ import (
 	script "github.com/ThamizhLearner/Thamizh"
 )
 
+// Suffix decomposition (match 'n trim) abstraction
 type SuffixTrimmer interface { // Suffix trimming rule [Technically, how it works is not important in itself]
 	GetSuffix() script.LetterSeq
 	// Trim the suffix and return the remnant/s
@@ -25,8 +26,9 @@ var str_ம = script.MustLetterSeqFrom("ம்")
 
 var str_empty = script.LetterSeq{}
 
-func createSuffixTrimmer(s string) SuffixTrimmer {
-	subs := strings.Split(s, " ") // Look out for first Space separator
+// Creates a suffix trimmer, based on the rule description lifted from rules file
+func createSuffixTrimmer(ruleDesc string) SuffixTrimmer {
+	subs := strings.Split(ruleDesc, " ") // Look out for first Space separator
 
 	if strings.Contains(subs[0], "|") { // Compound-form code
 		subs := strings.Split(subs[0], "|")
@@ -85,13 +87,7 @@ func createSuffixTrimmer(s string) SuffixTrimmer {
 	}}
 }
 
-func Assert(assertion bool, msg string) {
-	if !assertion {
-		panic(msg)
-	}
-}
-
-// Suffix decomposition rule
+// Suffix decomposition (match 'n trim) rule (Implements SuffixTrimmer interface)
 type SuffixTrimRule struct {
 	name       script.LetterSeq
 	substRules []SubstRule

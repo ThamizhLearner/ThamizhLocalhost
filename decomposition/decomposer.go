@@ -47,8 +47,6 @@ import (
 
 // Recursive trimming, applied to the remnant from the previous trim
 type Decomposition struct { // Fine for single chain!
-	mainStr string // String being decomposed
-
 	// Ordered trim operations
 	// Last trim holds the final remnant (which could not be trimmed further)
 	suffixes []Trim
@@ -64,8 +62,7 @@ func Decompose(str script.LetterSeq) []Decomposition {
 	var growingDecomp []Decomposition // Decomposition chains
 	// First let's create some seed decompositions!
 	for _, r := range GetPossibleTrims(str) {
-		growingDecomp = append(growingDecomp, Decomposition{mainStr: str.String(), suffixes: []Trim{r}})
-		fmt.Println("seed", str, r.str, r.trimmer.GetSuffix())
+		growingDecomp = append(growingDecomp, Decomposition{suffixes: []Trim{r}})
 	}
 	// Note: Decomposition chain may grow/split/stop
 	// When all chains stop growing, we're done!
@@ -89,7 +86,6 @@ func Decompose(str script.LetterSeq) []Decomposition {
 				// Clone the decomposition before growing it further
 				count := len(decomp.suffixes)
 				branched := Decomposition{ // Clone the Decomposition
-					mainStr:  decomp.mainStr,
 					suffixes: slices.Clone(decomp.suffixes[:count-1]), // Skip the last one! [While cloning...]
 				}
 				branched.suffixes = append(branched.suffixes, r)
@@ -130,7 +126,6 @@ func GetPossibleTrims(str script.LetterSeq) []Trim {
 				}
 				tmpStr := trimmedStr.LetterAppended(letter_உ)
 				trims = append(trims, Trim{str: tmpStr, trimmer: trimmer})
-				fmt.Println("Heal", trimmedStr.String(), tmpStr.String())
 				continue // In general, ignore trimmed stem ending with 2 Consonants
 			}
 
