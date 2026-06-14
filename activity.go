@@ -17,6 +17,7 @@ var activities []Activity = []Activity{
 	sylWordActivity{},
 	sylParaActivity{},
 	decompActivity{},
+	verbsActivity{},
 }
 
 // Currently active activity
