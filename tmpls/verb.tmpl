@@ -1,0 +1,33 @@
+{{define "ActivityPanel"}}
+   <header>
+   <p style="font-size:2.5em">Verb forms</p>
+   </header>
+
+   <section style="display:flex">
+      <nav style="flex:1;background:#eee">
+         <ul style="list-style-type:none">
+         {{range .VerbLinks}}
+            <li><a href={{.Url}}>{{.Name}}</a></li>
+         {{end}}
+         </ul>
+      </nav>
+
+      <article style="flex:4;background-color:#f1f1f1">
+         <h1>{{.Verb}}</h1>
+         <table style="border:1px solid black;border-collapse:collapse">
+            <tr>
+               <th style="border:1px solid gray;border-collapse:collapse;padding-left:10px;padding-right:10px">இறந்த காலம்</th>
+               <th style="border:1px solid gray;border-collapse:collapse;padding-left:10px;padding-right:10px">நிகழ் காலம்</th>
+               <th style="border:1px solid gray;border-collapse:collapse;padding-left:10px;padding-right:10px">எதிர் காலம்</th>
+            </tr>
+            {{range .Tenses}}
+               <tr>
+                  {{range .}}
+                     <td style="border:1px solid gray;border-collapse:collapse;padding-left:10px;padding-right:10px">{{.}}</td>
+                  {{end}}
+               </tr>
+            {{end}}
+         </table>
+      </article>
+   </section>
+{{end}}

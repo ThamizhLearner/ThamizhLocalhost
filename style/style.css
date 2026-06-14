@@ -1,14 +1,18 @@
 body {
-   font-family: monospace;
+   font-family: sans-serif;
    background-color: whitesmoke;
    margin: 20px 40px;
 }
 
 * {
-   color:darkblue;
+   color:#333;
 }
 
 input[type="submit"] {
    padding-left: 20px;
    padding-right: 20px;
+}
+
+a {
+   text-decoration: none;
 }
