@@ -1,33 +1,60 @@
 {{define "ActivityPanel"}}
+   <p style="font-size:1.5em;font-weight:bold;font-family:courier;color:darkorange">[ Status: Work in progress ]</p>
    <header>
    <p style="font-size:2.5em">Verb forms</p>
    </header>
 
    <section style="display:flex">
-      <nav style="flex:1;background:#eee">
-         <ul style="list-style-type:none">
+      <nav style="flex:1;background:#fafafa">
+         <ul>
          {{range .VerbLinks}}
-            <li><a href={{.Url}}>{{.Name}}</a></li>
+            <li><a href="{{.Url}}">{{.Name}}</a></li>
          {{end}}
          </ul>
       </nav>
 
-      <article style="flex:4;background-color:#f1f1f1">
+      <article style="flex:4;background-color:#fcfcfc">
          <h1>{{.Verb}}</h1>
-         <table style="border:1px solid black;border-collapse:collapse">
-            <tr>
-               <th style="border:1px solid gray;border-collapse:collapse;padding-left:10px;padding-right:10px">இறந்த காலம்</th>
-               <th style="border:1px solid gray;border-collapse:collapse;padding-left:10px;padding-right:10px">நிகழ் காலம்</th>
-               <th style="border:1px solid gray;border-collapse:collapse;padding-left:10px;padding-right:10px">எதிர் காலம்</th>
-            </tr>
-            {{range .Tenses}}
-               <tr>
-                  {{range .}}
-                     <td style="border:1px solid gray;border-collapse:collapse;padding-left:10px;padding-right:10px">{{.}}</td>
-                  {{end}}
-               </tr>
-            {{end}}
-         </table>
+         <div>
+            <span style="font-weight:bold">தொழிற்பெயர்</span> : {{.VerbalNoun}}
+            <br/>
+            <span style="font-weight:bold">வினையடி</span> : {{.Verb}}
+         </div>
+
+         {{template "SimpleTable" .RefTable}}
+         {{template "SimpleTable" .DecompTable}}
+
+         <p/>
+         <hr/>
+         <h2>Learner's zone</h2>
+
+         {{template "SimpleTable" .PhraseTable}}
+         {{template "SimpleTable" .SylPhraseTable}}
+         {{template "SimpleTable" .Table}}
+
       </article>
    </section>
+{{end}}
+
+{{define "SimpleTable"}}
+<div>
+   <h3>{{.Title}}</h3>
+   <table>
+      <tr>
+      {{range .ColInfoList}}
+         <th colspan="{{.Span}}">{{.Header}}</th>
+      {{end}}
+      </tr>
+
+      {{range .Cells}}
+         <tr>
+         {{range .}}
+            <td>
+            {{.}}
+            </td>
+         {{end}}
+         </tr>
+      {{end}}
+   </table>
+</div>
 {{end}}
