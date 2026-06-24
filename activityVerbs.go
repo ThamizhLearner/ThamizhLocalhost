@@ -28,9 +28,14 @@ func (a verbsActivity) Respond(w http.ResponseWriter, r *http.Request) {
 	if len(reqVerb) == 0 {
 		verbIdx = 0 // Pick the first one from the verb list.
 	} else {
+		reqVSeq, ok := script.LetterSeqFrom(reqVerb)
+		if !ok {
+			fmt.Fprint(w, "Not a valid verb")
+			return
+		}
 		// Verify the given verb is in the list
 		for i, v := range verbItems {
-			if v.Name == reqVerb {
+			if v.Name.Equals(reqVSeq) {
 				verbIdx = i
 				break
 			}
@@ -43,17 +48,24 @@ func (a verbsActivity) Respond(w http.ResponseWriter, r *http.Request) {
 
 	var verbUrls []Hyperlink
 	for _, v := range verbItems {
+		vname := v.Name.String()
 		verbUrls = append(verbUrls, Hyperlink{
-			Name: fmt.Sprintf("%s (%s)", v.Root, v.Name),
-			Url:  template.URL(`/verbs?verb=` + v.Name),
+			Name: fmt.Sprintf("%s (%s)", v.Root, vname),
+			Url:  template.URL(`/verbs?verb=` + vname),
 		})
 	}
 
 	verbItem := verbItems[verbIdx]
-	tenseForms := outTenseFormATable(script.MustLetterSeqFrom(verbItem.Root))
+	tenseForms := outTenseTable(verbItem.Root, gTenseFormASuffixes)
+	decompTable := decompTableA(verbItem.Root.String())
+	if verbItem.Type == 'B' {
+		tenseForms = outTenseTable(verbItem.Root, gTenseFormBSuffixes)
+		decompTable = decompTableB(verbItem.Root.String())
+	}
+
 	seed := struct {
-		Verb           string
-		VerbalNoun     string
+		Verb           script.LetterSeq
+		VerbalNoun     script.LetterSeq
 		VerbLinks      []Hyperlink
 		RefTable       SimpleTable
 		PhraseTable    SimpleTable
@@ -63,7 +75,7 @@ func (a verbsActivity) Respond(w http.ResponseWriter, r *http.Request) {
 	}{
 		verbItem.Root, verbItem.Name, verbUrls, tenseQRefTable(tenseForms),
 		tenseQPhraseTable(tenseForms, false), tenseQPhraseTable(tenseForms, true),
-		finalTable2(), decompTable(verbItem.Root),
+		finalTable2(), decompTable,
 	}
 
 	tmpl, err := template.ParseFiles(`tmpls/index.tmpl`, `tmpls/verb.tmpl`)
@@ -90,48 +102,84 @@ type ColInfo struct {
 
 // Verb picker list item
 type verbInfo struct {
-	Root string
-	Name string
+	Root script.LetterSeq
+	Name script.LetterSeq
+	Type rune // Tense composition type
 }
 
 var verbItems []verbInfo = getVerbItems()
 
+// Type B - அடைதல் (அடை + தல்) ["ந்த்", "", "வ்"]
+var verbRootsB []string = []string{
+	"சாய்",
+	"குனி",
+	"குளிர்",
+	"அசை",
+	"அடை",
+	"அமை",
+	"அழி",
+	"அறி",
+	"அறை",
+	"எரி",
+}
+
+// Type A - அடைத்தல் (அடை + த்தல்) ["த்த்", "க்", "ப்ப்"]
+var verbRootsA []string = []string{
+	"அசை",
+	"கடி",
+	"அடை",
+	"அடி",
+	"அமை",
+	"அவிழ்",
+	"அழி",
+	"அறு",
+	"இடி",
+	"இழு",
+	"இனி",
+	"உடை",
+	"உதை",
+	"எடு",
+	"எரி",
+	"ஒடி",
+	"ஒழி",
+	"கரி",
+	"கரை",
+	"கலை",
+	"கவனி",
+	"கவிழ்",
+	"கழி",
+	"கிடை",
+	"கிழி",
+}
+
 // Get list of available verbs to choose from!
 func getVerbItems() []verbInfo {
-	verbItems := []verbInfo{
-		{"அசை", "அசைத்தல்"},
-		{"கடி", "கடித்தல்"},
-		{"அடை", "அடைத்தல்"},
-		{"அடி", "அடித்தல்"},
-		{"அமை", "அமைத்தல்"},
-		{"அவிழ்", "அவிழ்த்தல்"},
-		{"அழி", "அழித்தல்"},
-		{"அறு", "அறுத்தல்"},
-		{"இடி", "இடித்தல்"},
-		{"இழு", "இழுத்தல்"},
-		{"இனி", "இனித்தல்"},
-		{"உடை", "உடைத்தல்"},
-		{"உதை", "உதைத்தல்"},
-		{"எடு", "எடுத்தல்"},
-		{"எரி", "எரித்தல்"},
-		{"ஒடி", "ஒடித்தல்"},
-		{"ஒழி", "ஒழித்தல்"},
-		{"கரி", "கரித்தல்"},
-		{"கரை", "கரைத்தல்"},
-		{"கலை", "கலைத்தல்"},
-		{"கவனி", "கவனித்தல்"},
-		{"கவிழ்", "கவிழ்த்தல்"},
-		{"கழி", "கழித்தல்"},
-		{"கிடை", "கிடைத்தல்"},
-		{"கிழி", "கிழித்தல்"},
+	var verbTypeAItems []verbInfo
+
+	fix := script.MustLetterSeqFrom("த்தல்")
+	for _, vroot := range verbRootsA {
+		r := script.MustLetterSeqFrom(vroot)
+		n := r.Appended(fix)
+		verbTypeAItems = append(verbTypeAItems, verbInfo{Root: r, Name: n, Type: 'A'})
+	}
+
+	fix = script.MustLetterSeqFrom("தல்")
+	for _, vroot := range verbRootsB {
+		r := script.MustLetterSeqFrom(vroot)
+		n := r.Appended(fix)
+		verbTypeAItems = append(verbTypeAItems, verbInfo{Root: r, Name: n, Type: 'B'})
 	}
 
 	// Sort!
-	sort.Slice(verbItems, func(i, j int) bool {
-		return verbItems[i].Name < verbItems[j].Name
+	sort.Slice(verbTypeAItems, func(i, j int) bool {
+		a, b := verbTypeAItems[i], verbTypeAItems[j]
+		if a.Root.String() == b.Root.String() {
+			return a.Name.String() < b.Name.String()
+		}
+		return a.Root.String() < b.Root.String()
 	})
 
-	return verbItems
+	return verbTypeAItems
 }
 
 // Columns (5): Pronoun, Past, Present, Present2, Future
@@ -179,15 +227,15 @@ func tenseQPhraseTable(tenseTable [8][4]string, iSyllabified bool) SimpleTable {
 		row := make([]string, 4)
 		pronoun := pronounInfo.Names[0]
 		if iSyllabified {
-			pronoun, _ = script.SyllabifiedUStr(script.MustLetterSeqFrom(pronoun), "|")
-			pronoun = fmt.Sprintf("(%s)", pronoun)
+			pronoun, _ = script.SyllabifiedUStr(script.MustLetterSeqFrom(pronoun), "-")
+			pronoun = fmt.Sprintf("%s | ", pronoun)
 		}
 
 		for c := range 4 {
 			cell := tenseTable[r][c]
 			if iSyllabified {
-				cell, _ = script.SyllabifiedUStr(script.MustLetterSeqFrom(cell), "|")
-				cell = fmt.Sprintf("(%s)", cell)
+				cell, _ = script.SyllabifiedUStr(script.MustLetterSeqFrom(cell), "-")
+				cell = fmt.Sprintf("%s", cell)
 			}
 			row[c] = fmt.Sprintf("%s %s", pronoun, cell)
 		}
@@ -207,7 +255,7 @@ func finalTable2() SimpleTable {
 	for r := range 10 {
 		pronounInfo := gPronounInfoList[r]
 		row := make([]string, 5)
-		row[0] = strings.Join(pronounInfo.Names, ", ")
+		row[0] = strings.Join(pronounInfo.Names, " | ")
 		row[1] = pronounInfo.Thinai
 		row[2] = pronounInfo.Paal
 		row[3] = pronounInfo.En
@@ -217,54 +265,12 @@ func finalTable2() SimpleTable {
 	return table
 }
 
-// Columns (5): Pronoun, Past, Present, Present2, Future
-func decompTable(vroot string) SimpleTable {
-	var suffixGrid = [8][4]string{
-		{`த்த் # ஏன்`, `க் + கிற் # ஏன்`, `க் + கின்ற் # ஏன்`, `ப்ப் # ஏன்`},
-		{`த்த் # ஓம்`, `க் + கிற் # ஓம்`, `க் + கின்ற் # ஓம்`, `ப்ப் # ஓம்`},
-		{`த்த் # ஆய்`, `க் + கிற் # ஆய்`, `க் + கின்ற் # ஆய்`, `ப்ப் # ஆய்`},
-		{`த்த் # ஈர்கள்`, `க் + கிற் # ஈர்கள்`, `க் + கின்ற் # ஈர்கள்`, `ப்ப் # ஈர்கள்`},
-		{`த்த் # ஆன்`, `க் + கிற் # ஆன்`, `க் + கின்ற் # ஆன்`, `ப்ப் # ஆன்`},
-		{`த்த் # ஆள்`, `க் + கிற் # ஆள்`, `க் + கின்ற் # ஆள்`, `ப்ப் # ஆள்`},
-		{`த்த் # ஆர்`, `க் + கிற் # ஆர்`, `க் + கின்ற் # ஆர்`, `ப்ப் # ஆர்`},
-		{`த்த் # ஆர்கள்`, `க் + கிற் # ஆர்கள்`, `க் + கின்ற் # ஆர்கள்`, `ப்ப் # ஆர்கள்`},
-	}
-
-	table := SimpleTable{
-		Title: "Tense pattern format (Type: (todo))",
-		Rows:  8, Columns: 9,
-		ColInfoList: []ColInfo{{"Pronoun", 1}, {"இறந்த காலம்", 1}, {"நிகழ் காலம்", 2}, {"எதிர் காலம்", 1}},
-		Cells:       make([][]string, 10),
-	}
-	for r := range 10 {
-		pronounInfo := gPronounInfoList[r]
-		row := make([]string, 5)
-		row[0] = pronounInfo.Names[0]
-
-		if r >= 8 {
-			for c := range 4 {
-				row[1+c] = "(todo)"
-			}
-			table.Cells[r] = row
-			continue
-		}
-
-		for c := range 4 {
-			row[1+c] = strings.Replace(fmt.Sprintf("(%s)%s", vroot, suffixGrid[r][c]), " ", "", -1)
-			row[1+c] = strings.Replace(row[1+c], "#", "|", -1)
-		}
-		table.Cells[r] = row
-	}
-	return table
-}
-
 // Final tense forms table, for the given root verb.
-func outTenseFormATable(vroot script.LetterSeq) [8][4]string {
-	suffixes := TenseFormASuffixes
+func outTenseTable(vroot script.LetterSeq, suffixTable [8][4]script.LetterSeq) [8][4]string {
 	var table [8][4]string
 	for r := range 8 {
 		for c := range 4 {
-			suffix := suffixes[r][c]
+			suffix := suffixTable[r][c]
 			if suffix.First().IsV() {
 				seq, ok := script.VSuffixAppended(vroot, suffix)
 				if !ok {
@@ -281,6 +287,10 @@ func outTenseFormATable(vroot script.LetterSeq) [8][4]string {
 
 func createTenseFormASuffixes() [8][4]script.LetterSeq {
 	return createTenseSuffixes(script.MustLetterSeqFrom("த்த்"), script.MustLetterSeqFrom("க்"), script.MustLetterSeqFrom("ப்ப்"))
+}
+
+func createTenseFormBSuffixes() [8][4]script.LetterSeq {
+	return createTenseSuffixes(script.MustLetterSeqFrom("ந்த்"), script.LetterSeq{}, script.MustLetterSeqFrom("வ்"))
 }
 
 // Constructs final suffix mask.
@@ -313,7 +323,8 @@ type Hyperlink struct {
 
 // Internal (mutable!)
 var gCoreTenseSuffixes [8][4]script.LetterSeq = createCoreTenseSuffixes()
-var TenseFormASuffixes [8][4]script.LetterSeq = createTenseFormASuffixes()
+var gTenseFormASuffixes [8][4]script.LetterSeq = createTenseFormASuffixes()
+var gTenseFormBSuffixes [8][4]script.LetterSeq = createTenseFormBSuffixes()
 
 // Core suffix mask for final tense form compositions.
 func createCoreTenseSuffixes() [8][4]script.LetterSeq {
@@ -342,13 +353,13 @@ func createCoreTenseSuffixes() [8][4]script.LetterSeq {
 // திணை: உயர்திணை அஃறிணை
 // பால்: ஆண்பால், பெண்பால், பலர்பால், ஒன்றன்பால், பலவின்பால்
 var gPronounInfoList = []pronounInfo{
-	{Id: "1s", Names: []string{"நான்"}, Idam: "தன்மை", Paal: "ஆண்பால், பெண்பால்", Thinai: "உயர்திணை", En: "ஒருமை"},
+	{Id: "1s", Names: []string{"நான்"}, Idam: "தன்மை", Paal: "ஆண்பால் | பெண்பால்", Thinai: "உயர்திணை", En: "ஒருமை"},
 	{Id: "1p", Names: []string{"நாங்கள்", "நாம்"}, Idam: "தன்மை", Paal: "பலர்பால்", Thinai: "உயர்திணை", En: "பன்மை"},
-	{Id: "2s", Names: []string{"நீ", "நீம்"}, Idam: "முன்னிலை", Paal: "ஆண்பால், பெண்பால்", Thinai: "உயர்திணை", En: "ஒருமை"},
+	{Id: "2s", Names: []string{"நீ", "நீம்"}, Idam: "முன்னிலை", Paal: "ஆண்பால் | பெண்பால்", Thinai: "உயர்திணை", En: "ஒருமை"},
 	{Id: "2p", Names: []string{"நீங்கள்"}, Idam: "முன்னிலை", Paal: "பலர்பால்", Thinai: "உயர்திணை", En: "பன்மை"},
 	{Id: "3sm", Names: []string{"அவன்", "இவன்", "எவன்"}, Idam: "படர்க்கை", Paal: "ஆண்பால்", Thinai: "உயர்திணை", En: "ஒருமை"},
 	{Id: "3sf", Names: []string{"அவள்", "இவள்", "எவள்"}, Idam: "படர்க்கை", Paal: "பெண்பால்", Thinai: "உயர்திணை", En: "ஒருமை"},
-	{Id: "3sh", Names: []string{"அவர்", "இவர்", "எவர்"}, Idam: "படர்க்கை", Paal: "ஆண்பால், பெண்பால்", Thinai: "உயர்திணை", En: "ஒருமை"},
+	{Id: "3sh", Names: []string{"அவர்", "இவர்", "எவர்"}, Idam: "படர்க்கை", Paal: "ஆண்பால் | பெண்பால்", Thinai: "உயர்திணை", En: "ஒருமை"},
 	{Id: "3ph", Names: []string{"அவர்கள்", "இவர்கள்", "எவர்கள்"}, Idam: "படர்க்கை", Paal: "பலர்பால்", Thinai: "உயர்திணை", En: "பன்மை"},
 	{Id: "3sn", Names: []string{"அது", "இது", "எது"}, Idam: "படர்க்கை", Paal: "ஒன்றன்பால்", Thinai: "அஃறிணை", En: "ஒருமை"},
 	{Id: "3pn", Names: []string{"அவை", "இவை", "எவை"}, Idam: "படர்க்கை", Paal: "பலவின்பால்", Thinai: "அஃறிணை", En: "பன்மை"},
