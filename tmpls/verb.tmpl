@@ -16,9 +16,7 @@
       <article style="flex:4;background-color:#fcfcfc">
          <h1>{{.Verb}}</h1>
          <div>
-            <span style="font-weight:bold">தொழிற்பெயர்</span> : {{.VerbalNoun}}
-            <br/>
-            <span style="font-weight:bold">வினையடி</span> : {{.Verb}}
+            <span style="font-weight:bold">தொழிற்பெயர் (activity) :</span> {{.VerbalNoun}}
          </div>
 
          {{template "SimpleTable" .RefTable}}
@@ -26,12 +24,20 @@
 
          <p/>
          <hr/>
-         <h2>Learner's zone</h2>
+         <h2>Alternative perspectives</h2>
 
          {{template "SimpleTable" .PhraseTable}}
          {{template "SimpleTable" .SylPhraseTable}}
+
+         <h2>General info</h2>
          {{template "SimpleTable" .Table}}
 
+         {{if .VerbGraph}}
+            <h3>Classification of தமிழ் verbs</h3>
+            <div class="mermaid">
+               {{.VerbGraph}}
+            </div>
+         {{end}}
       </article>
    </section>
 {{end}}

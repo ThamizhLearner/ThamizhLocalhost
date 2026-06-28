@@ -72,10 +72,11 @@ func (a verbsActivity) Respond(w http.ResponseWriter, r *http.Request) {
 		SylPhraseTable SimpleTable
 		Table          SimpleTable
 		DecompTable    SimpleTable
+		VerbGraph      string
 	}{
 		verbItem.Root, verbItem.Name, verbUrls, tenseQRefTable(tenseForms),
 		tenseQPhraseTable(tenseForms, false), tenseQPhraseTable(tenseForms, true),
-		finalTable2(), decompTable,
+		finalTable2(), decompTable, createVerbGraph(),
 	}
 
 	tmpl, err := template.ParseFiles(`tmpls/index.tmpl`, `tmpls/verb.tmpl`)
@@ -220,7 +221,7 @@ func tenseQPhraseTable(tenseTable [8][4]string, iSyllabified bool) SimpleTable {
 		Cells:       make([][]string, 8),
 	}
 	if iSyllabified {
-		table.Title = "Syllabified (pronunciation hint) view"
+		table.Title = "Syllabified (quick pronunciation hint) view"
 	}
 	for r := range 8 {
 		pronounInfo := gPronounInfoList[r]
