@@ -6,6 +6,7 @@ Locally hosted server application for Thamizh exploration.
 . Syllabification (https://github.com/ThamizhLearner/ThamizhLibUsage?tab=readme-ov-file#sample-tutorial-programs[What is this?])
 . *Work in progress*: Verb list
 . *Next*: Word decomposition (Composition analysis)
+. *Next*: திருக்குறள் (யாப்பிலக்கணம்) [Thirukkural study]
 
 == Trying it out
 

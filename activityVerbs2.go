@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 )
 
 // Tense composition expression template
@@ -47,7 +48,7 @@ func decompTableB(vroot string) SimpleTable {
 // Columns (5): Pronoun, Past, Present, Present2, Future
 func decompTable(vroot string, infixesIdx int) SimpleTable {
 	infixes := infixesList[infixesIdx]
-	var coreTenseInserts = [4]string{"", "கிற்", "கின்ற்", ""}
+	var coreTenseInserts = [4]string{"", "கிற", "கின்ற", ""}
 	table := SimpleTable{
 		Title: fmt.Sprintf("Tense pattern format (Type: %c)", "ABCD"[infixesIdx]),
 		Rows:  10, Columns: 4,
@@ -87,4 +88,38 @@ func decompTable(vroot string, infixesIdx int) SimpleTable {
 		table.Cells[r] = row
 	}
 	return table
+}
+
+// Verb classification graph
+func createVerbGraph() string {
+	// Graph driven by Mermaid (https://mermaid.js.org/)
+	sb := strings.Builder{}
+	sb.WriteString("graph LR\n")
+	terms := []string{
+		"A(வினைச்சொல்)",
+		"B(\"வினைமுற்று\n(வினை + முற்று)\")",
+		"C(\"வினையெச்சம்\n(வினை + எச்சம்)\")",
+		"D(\"பெயரெச்சம்\n(பெயர் + எச்சம்)\")",
+		"E(தெரிநிலை வினைமுற்று)", "F(குறிப்பு வினைமுற்று)",
+		"G(தெரிநிலை வினையெச்சம்)", "H(குறிப்பு வினையெச்சம்)",
+		"I(தெரிநிலை பெயரெச்சம்)", "J(குறிப்புப் பெயரெச்சம்)",
+	}
+	// Define the nodes
+	for _, t := range terms {
+		sb.WriteString(t)
+		sb.WriteString("\n")
+	}
+	// Connect the nodes
+	links := []string{
+		"A --> B", "A --> C", "A --> D",
+		"B --> E", "B --> F",
+		"C --> G", "C --> H",
+		"D --> I", "D --> J",
+	}
+	for _, l := range links {
+		sb.WriteString(l)
+		sb.WriteString("\n")
+	}
+
+	return sb.String()
 }
