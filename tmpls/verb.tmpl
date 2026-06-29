@@ -1,7 +1,7 @@
 {{define "ActivityPanel"}}
-   <p style="font-size:1.5em;font-weight:bold;font-family:courier;color:darkorange">[ Status: Work in progress ]</p>
    <header>
-   <p style="font-size:2.5em">Verb forms</p>
+   <h1>Verb forms</h1>
+   <p style="font-size:1.5em;font-weight:bold;font-family:courier;color:darkorange">[ Status: Work in progress ]</p>
    </header>
 
    <section style="display:flex">
@@ -24,20 +24,10 @@
 
          <p/>
          <hr/>
-         <h2>Alternative perspectives</h2>
+         <h2>Alternative perspective</h2>
 
          {{template "SimpleTable" .PhraseTable}}
          {{template "SimpleTable" .SylPhraseTable}}
-
-         <h2>General info</h2>
-         {{template "SimpleTable" .Table}}
-
-         {{if .VerbGraph}}
-            <h3>Classification of தமிழ் verbs</h3>
-            <div class="mermaid">
-               {{.VerbGraph}}
-            </div>
-         {{end}}
       </article>
    </section>
 {{end}}
