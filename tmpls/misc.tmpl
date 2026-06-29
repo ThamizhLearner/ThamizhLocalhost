@@ -1,0 +1,35 @@
+{{define "ActivityPanel"}}
+   <header>
+   <h1>Misc</h1>
+   </header>
+
+   {{template "SimpleTable" .InfoTable}}
+   <h3>Classification of தமிழ் verbs</h3>
+   <div class="mermaid">
+      {{.VerbGraph}}
+   </div>
+
+{{end}}
+
+{{define "SimpleTable"}}
+<div>
+   <h3>{{.Title}}</h3>
+   <table>
+      <tr>
+      {{range .ColInfoList}}
+         <th colspan="{{.Span}}">{{.Header}}</th>
+      {{end}}
+      </tr>
+
+      {{range .Cells}}
+         <tr>
+         {{range .}}
+            <td>
+            {{.}}
+            </td>
+         {{end}}
+         </tr>
+      {{end}}
+   </table>
+</div>
+{{end}}
