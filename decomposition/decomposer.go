@@ -118,17 +118,6 @@ func GetPossibleTrims(str script.LetterSeq) []Trim {
 				continue
 			}
 
-			// Additional trim: If trimmed stem ends with 2 Consonants
-			if len >= 2 && trimmedStr.Last().IsC() && trimmedStr.Nth(len-2).IsC() {
-				// If the suffix being trimmed is itself "உ", then we go into an infinite loop
-				if trimmer.GetSuffix().First().Equals(letter_உ) && trimmer.GetSuffix().Len() == 1 {
-					continue
-				}
-				tmpStr := trimmedStr.LetterAppended(letter_உ)
-				trims = append(trims, Trim{str: tmpStr, trimmer: trimmer})
-				continue // In general, ignore trimmed stem ending with 2 Consonants
-			}
-
 			trims = append(trims, Trim{str: trimmedStr, trimmer: trimmer})
 		}
 	}
