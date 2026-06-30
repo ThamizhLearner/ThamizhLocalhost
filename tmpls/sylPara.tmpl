@@ -1,8 +1,8 @@
 {{define "ActivityPanel"}}
-   <h1>English syllabification technique (applied to Thamizh)</h1>
+   <h1>தமிழ் paragraph syllabification</h1>
    <br/>
 
-   <form method="post" style="font-size:2em">
+   <form method="post" style="font-size:1.5em">
       <label for="inpStr">Type in or paste Thamizh text paragraph:</label>
       <br>
       <textarea id="inpStr" name="inpStr" rows="4" cols="48" required style="font-size:inherit"></textarea>
@@ -11,10 +11,10 @@
    </form>
 
    {{if .SylStr}}
-      <div style="font-size:2em">
+      <div style="font-size:1.25em">
          <p>{{.InpStr}}</p>
       </div>
-      <div style="font-size:2em">
+      <div style="font-size:1.5em">
          <p>{{.SylStr}}</p>
       </div>
    {{else}}
