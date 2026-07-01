@@ -43,6 +43,20 @@ func decompTableB(vroot string) SimpleTable {
 	return decompTable(vroot, 1)
 }
 
+// Tense form decomposition illustration (for Type C tense composition)
+//
+// Columns (5): Pronoun, Past, Present, Present2, Future
+func decompTableC(vroot string) SimpleTable {
+	return decompTable(vroot, 2)
+}
+
+// Tense form decomposition illustration (for Type D tense composition)
+//
+// Columns (5): Pronoun, Past, Present, Present2, Future
+func decompTableD(vroot string) SimpleTable {
+	return decompTable(vroot, 3)
+}
+
 // Tense form decomposition illustration
 //
 // Columns (5): Pronoun, Past, Present, Present2, Future

@@ -51,16 +51,29 @@ func (a verbsActivity) Respond(w http.ResponseWriter, r *http.Request) {
 		vname := v.Name.String()
 		verbUrls = append(verbUrls, Hyperlink{
 			Name: fmt.Sprintf("%s (%s)", v.Root, vname),
-			Url:  template.URL(`/verbs?verb=` + vname),
+			// Name: fmt.Sprintf("%s (%s) - %c", v.Root, vname, v.Type),
+			Url: template.URL(`/verbs?verb=` + vname),
 		})
 	}
 
 	verbItem := verbItems[verbIdx]
-	tenseForms := outTenseTable(verbItem.Root, gTenseFormASuffixes)
-	decompTable := decompTableA(verbItem.Root.String())
-	if verbItem.Type == 'B' {
+	var tenseForms [8][4]string
+	var decompTable SimpleTable
+	switch verbItem.Type {
+	case 'A':
+		tenseForms = outTenseTable(verbItem.Root, gTenseFormASuffixes)
+		decompTable = decompTableA(verbItem.Root.String())
+	case 'B':
 		tenseForms = outTenseTable(verbItem.Root, gTenseFormBSuffixes)
 		decompTable = decompTableB(verbItem.Root.String())
+	case 'C':
+		tenseForms = outTenseTable(verbItem.Root, gTenseFormCSuffixes)
+		decompTable = decompTableC(verbItem.Root.String())
+	case 'D':
+		tenseForms = outTenseTable(verbItem.Root, gTenseFormDSuffixes)
+		decompTable = decompTableD(verbItem.Root.String())
+	default:
+		panic("Coding error: Unsupported verb tense type")
 	}
 
 	seed := struct {
@@ -70,13 +83,11 @@ func (a verbsActivity) Respond(w http.ResponseWriter, r *http.Request) {
 		RefTable       SimpleTable
 		PhraseTable    SimpleTable
 		SylPhraseTable SimpleTable
-		Table          SimpleTable
 		DecompTable    SimpleTable
-		VerbGraph      string
 	}{
 		verbItem.Root, verbItem.Name, verbUrls, tenseQRefTable(tenseForms),
 		tenseQPhraseTable(tenseForms, false), tenseQPhraseTable(tenseForms, true),
-		finalTable2(), decompTable, createVerbGraph(),
+		decompTable,
 	}
 
 	tmpl, err := template.ParseFiles(`tmpls/index.tmpl`, `tmpls/verb.tmpl`)
@@ -110,20 +121,6 @@ type verbInfo struct {
 
 var verbItems []verbInfo = getVerbItems()
 
-// Type B - அடைதல் (அடை + தல்) ["ந்த்", "", "வ்"]
-var verbRootsB []string = []string{
-	"சாய்",
-	"குனி",
-	"குளிர்",
-	"அசை",
-	"அடை",
-	"அமை",
-	"அழி",
-	"அறி",
-	"அறை",
-	"எரி",
-}
-
 // Type A - அடைத்தல் (அடை + த்தல்) ["த்த்", "க்", "ப்ப்"]
 var verbRootsA []string = []string{
 	"அசை",
@@ -153,34 +150,74 @@ var verbRootsA []string = []string{
 	"கிழி",
 }
 
+// Type B - அடைதல் (அடை + தல்) ["ந்த்", "", "வ்"]
+var verbRootsB []string = []string{
+	"சாய்",
+	"குனி",
+	"குளிர்",
+	"அசை",
+	"அடை",
+	"அமை",
+	"அழி",
+	"அறி",
+	"அறை",
+	"எரி",
+}
+
+// Type C -தோன்றுதல் (தோன்று + தல்) ["இன்", "", "வ்"]
+var verbRootsC []string = []string{
+	"தோன்று",
+	"தேடு",
+}
+
+// Type D - திறத்தல் (திற + த்தல்) ["ந்த்", "க்", "ப்ப்"]
+var verbRootsD []string = []string{
+	"திற",
+	"சும",
+}
+
 // Get list of available verbs to choose from!
 func getVerbItems() []verbInfo {
-	var verbTypeAItems []verbInfo
+	var verbInfoItems []verbInfo
 
 	fix := script.MustLetterSeqFrom("த்தல்")
 	for _, vroot := range verbRootsA {
 		r := script.MustLetterSeqFrom(vroot)
 		n := r.Appended(fix)
-		verbTypeAItems = append(verbTypeAItems, verbInfo{Root: r, Name: n, Type: 'A'})
+		verbInfoItems = append(verbInfoItems, verbInfo{Root: r, Name: n, Type: 'A'})
 	}
 
 	fix = script.MustLetterSeqFrom("தல்")
 	for _, vroot := range verbRootsB {
 		r := script.MustLetterSeqFrom(vroot)
 		n := r.Appended(fix)
-		verbTypeAItems = append(verbTypeAItems, verbInfo{Root: r, Name: n, Type: 'B'})
+		verbInfoItems = append(verbInfoItems, verbInfo{Root: r, Name: n, Type: 'B'})
+	}
+
+	fix = script.MustLetterSeqFrom("தல்")
+	for _, vroot := range verbRootsC {
+		r := script.MustLetterSeqFrom(vroot)
+		n := r.Appended(fix)
+		verbInfoItems = append(verbInfoItems, verbInfo{Root: r, Name: n, Type: 'C'})
+	}
+
+	fix = script.MustLetterSeqFrom("த்தல்")
+	for _, vroot := range verbRootsD {
+		r := script.MustLetterSeqFrom(vroot)
+		n := r.Appended(fix)
+		verbInfoItems = append(verbInfoItems, verbInfo{Root: r, Name: n, Type: 'D'})
 	}
 
 	// Sort!
-	sort.Slice(verbTypeAItems, func(i, j int) bool {
-		a, b := verbTypeAItems[i], verbTypeAItems[j]
+	sort.Slice(verbInfoItems, func(i, j int) bool {
+		a, b := verbInfoItems[i], verbInfoItems[j]
 		if a.Root.String() == b.Root.String() {
 			return a.Name.String() < b.Name.String()
 		}
 		return a.Root.String() < b.Root.String()
 	})
 
-	return verbTypeAItems
+	return verbInfoItems
 }
 
 // Columns (5): Pronoun, Past, Present, Present2, Future
@@ -275,7 +312,10 @@ func outTenseTable(vroot script.LetterSeq, suffixTable [8][4]script.LetterSeq) [
 			if suffix.First().IsV() {
 				seq, ok := script.VSuffixAppended(vroot, suffix)
 				if !ok {
-					panic("Coding error")
+					seq, ok = script.VSuffixVSubst(vroot, suffix)
+					if !ok {
+						panic("Coding error")
+					}
 				}
 				table[r][c] = seq.String()
 				continue
@@ -286,12 +326,20 @@ func outTenseTable(vroot script.LetterSeq, suffixTable [8][4]script.LetterSeq) [
 	return table
 }
 
-func createTenseFormASuffixes() [8][4]script.LetterSeq {
+func createTenseFormASuffixes() [8][4]script.LetterSeq { // Type A {"த்த்", "க்", "ப்ப்"}
 	return createTenseSuffixes(script.MustLetterSeqFrom("த்த்"), script.MustLetterSeqFrom("க்"), script.MustLetterSeqFrom("ப்ப்"))
 }
 
-func createTenseFormBSuffixes() [8][4]script.LetterSeq {
+func createTenseFormBSuffixes() [8][4]script.LetterSeq { // Type B {"ந்த்", "", "வ்"}
 	return createTenseSuffixes(script.MustLetterSeqFrom("ந்த்"), script.LetterSeq{}, script.MustLetterSeqFrom("வ்"))
+}
+
+func createTenseFormCSuffixes() [8][4]script.LetterSeq { // Type C {"இன்", "", "வ்"}
+	return createTenseSuffixes(script.MustLetterSeqFrom("இன்"), script.LetterSeq{}, script.MustLetterSeqFrom("வ்"))
+}
+
+func createTenseFormDSuffixes() [8][4]script.LetterSeq { // Type D {"ந்த்", "க்", "ப்ப்"}
+	return createTenseSuffixes(script.MustLetterSeqFrom("ந்த்"), script.MustLetterSeqFrom("க்"), script.MustLetterSeqFrom("ப்ப்"))
 }
 
 // Constructs final suffix mask.
@@ -326,6 +374,8 @@ type Hyperlink struct {
 var gCoreTenseSuffixes [8][4]script.LetterSeq = createCoreTenseSuffixes()
 var gTenseFormASuffixes [8][4]script.LetterSeq = createTenseFormASuffixes()
 var gTenseFormBSuffixes [8][4]script.LetterSeq = createTenseFormBSuffixes()
+var gTenseFormCSuffixes [8][4]script.LetterSeq = createTenseFormCSuffixes()
+var gTenseFormDSuffixes [8][4]script.LetterSeq = createTenseFormDSuffixes()
 
 // Core suffix mask for final tense form compositions.
 func createCoreTenseSuffixes() [8][4]script.LetterSeq {
