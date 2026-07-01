@@ -3,10 +3,11 @@
 Locally hosted server application for Thamizh exploration.
 
 .Activities (Implementation status)
-. Syllabification (https://github.com/ThamizhLearner/ThamizhLibUsage?tab=readme-ov-file#sample-tutorial-programs[What is this?])
+. *Done*: Syllabification
 . *Work in progress*: Verb list
-. *Next*: Word decomposition (Composition analysis)
-. *Next*: திருக்குறள் (யாப்பிலக்கணம்) [Thirukkural study]
+. *Experimental*: Word decomposition (Composition analysis)
+. *Next*: திருக்குறள் (யாப்பிலக்கணம்) [Thirukkural structure analysis]
+. *Next*: Numbers (cardinal, ordinal, fractions)
 
 == Trying it out
 
