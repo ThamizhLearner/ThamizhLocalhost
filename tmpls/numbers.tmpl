@@ -1,0 +1,30 @@
+{{define "ActivityPanel"}}
+   <h1>Numbers</h1>
+   <p style="font-weight:bold;font-family:courier;color:darkorange">[ Status: Work in progress ]</p>
+
+   {{template "SimpleTable" .NumTable}}
+
+{{end}}
+
+{{define "SimpleTable"}}
+<div>
+   <h3>{{.Title}}</h3>
+   <table>
+      <tr>
+      {{range .ColInfoList}}
+         <th colspan="{{.Span}}">{{.Header}}</th>
+      {{end}}
+      </tr>
+
+      {{range .Cells}}
+         <tr>
+         {{range .}}
+            <td>
+            {{.}}
+            </td>
+         {{end}}
+         </tr>
+      {{end}}
+   </table>
+</div>
+{{end}}

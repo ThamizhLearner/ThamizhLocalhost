@@ -19,6 +19,7 @@ var activities []Activity = []Activity{
 	decompActivity{},
 	verbsActivity{},
 	miscActivity{},
+	numActivity{},
 }
 
 // Currently active activity
