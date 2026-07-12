@@ -9,6 +9,20 @@ import (
 	script "github.com/ThamizhLearner/Thamizh"
 )
 
+func Must[T any](obj T, err error) T {
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+func Must2[T any](obj T, ok bool) T {
+	if !ok {
+		panic("")
+	}
+	return obj
+}
+
 // Suffix decomposition (match 'n trim) abstraction
 type SuffixTrimmer interface { // Suffix trimming rule [Technically, how it works is not important in itself]
 	GetSuffix() script.LetterSeq
@@ -36,12 +50,12 @@ func createSuffixTrimmer(ruleDesc string) SuffixTrimmer {
 		for _, s := range subs[1:] {
 			idx := strings.Index(s, ":")
 			if idx == -1 { // got match-trim 'n replace pair
-				sr := SubstRule{matchTrimStr: script.MustLetterSeqFrom(strings.TrimSpace(s)), subsStr: str_empty}
+				sr := SubstRule{matchStr: script.MustLetterSeqFrom(strings.TrimSpace(s)), substStr: str_empty}
 				substRules = append(substRules, sr)
 			} else {
 				sr := SubstRule{
-					matchTrimStr: script.MustLetterSeqFrom(strings.TrimSpace(s[:idx])),
-					subsStr:      script.MustLetterSeqFrom(strings.TrimSpace(s[idx+1:])),
+					matchStr: script.MustLetterSeqFrom(strings.TrimSpace(s[:idx])),
+					substStr: script.MustLetterSeqFrom(strings.TrimSpace(s[idx+1:])),
 				}
 				substRules = append(substRules, sr)
 			}
@@ -54,18 +68,18 @@ func createSuffixTrimmer(ruleDesc string) SuffixTrimmer {
 	if sfx.First().IsV() {
 		substRules := []SubstRule{
 			// (Eg. கோயில் = கோ + இல்)
-			{matchTrimStr: script.MustLetterSeqFrom("ய்").Appended(sfx), subsStr: str_empty},
+			{matchStr: Must2(script.VSuffixAppended(script.MustLetterSeqFrom("ய்"), sfx)), substStr: str_empty},
 			// (Eg. கோவில் = கோ + இல்)
-			{matchTrimStr: script.MustLetterSeqFrom("வ்").Appended(sfx), subsStr: str_empty},
+			{matchStr: Must2(script.VSuffixAppended(script.MustLetterSeqFrom("வ்"), sfx)), substStr: str_empty},
 			// ம் restoration form த்த் (Eg. மாற்றத்தை = மாற்றம் + ஐ)
-			{matchTrimStr: str_தத.Appended(sfx), subsStr: str_ம},
+			{matchStr: Must2(script.VSuffixAppended(str_தத, sfx)), substStr: str_ம},
 			// (Eg. மாற்றம் = மாற் + அம்) | Applies to Strong Consonants (க், ச், ட், த், ப், ற்.)
-			{matchTrimStr: script.MustLetterSeqFrom("க்க்").Appended(sfx), subsStr: script.MustLetterSeqFrom("க்")},
-			{matchTrimStr: script.MustLetterSeqFrom("ச்ச்").Appended(sfx), subsStr: script.MustLetterSeqFrom("ச்")},
-			{matchTrimStr: script.MustLetterSeqFrom("ட்ட்").Appended(sfx), subsStr: script.MustLetterSeqFrom("ட்")},
-			{matchTrimStr: script.MustLetterSeqFrom("த்த்").Appended(sfx), subsStr: script.MustLetterSeqFrom("த்")},
-			{matchTrimStr: script.MustLetterSeqFrom("ப்ப்").Appended(sfx), subsStr: script.MustLetterSeqFrom("ப்")},
-			{matchTrimStr: script.MustLetterSeqFrom("ற்ற்").Appended(sfx), subsStr: script.MustLetterSeqFrom("ற்")},
+			{matchStr: Must2(script.VSuffixAppended(script.MustLetterSeqFrom("க்க்"), sfx)), substStr: script.MustLetterSeqFrom("க்")},
+			{matchStr: Must2(script.VSuffixAppended(script.MustLetterSeqFrom("ச்ச்"), sfx)), substStr: script.MustLetterSeqFrom("ச்")},
+			{matchStr: Must2(script.VSuffixAppended(script.MustLetterSeqFrom("ட்ட்"), sfx)), substStr: script.MustLetterSeqFrom("ட்")},
+			{matchStr: Must2(script.VSuffixAppended(script.MustLetterSeqFrom("த்த்"), sfx)), substStr: script.MustLetterSeqFrom("த்")},
+			{matchStr: Must2(script.VSuffixAppended(script.MustLetterSeqFrom("ப்ப்"), sfx)), substStr: script.MustLetterSeqFrom("ப்")},
+			{matchStr: Must2(script.VSuffixAppended(script.MustLetterSeqFrom("ற்ற்"), sfx)), substStr: script.MustLetterSeqFrom("ற்")},
 		}
 
 		return SuffixTrimRule{name: sfx, substRules: substRules}
@@ -75,15 +89,15 @@ func createSuffixTrimmer(ruleDesc string) SuffixTrimmer {
 	if sfx.First().IsCV() && sfx.First().IsStrongVocal() {
 		c, _ := sfx.First().UnsafeSplitCV()
 		substRules := []SubstRule{
-			{matchTrimStr: script.MustLetterSeqFrom(c.String()).Appended(sfx), subsStr: str_empty},
-			{matchTrimStr: sfx, subsStr: str_empty},
+			{matchStr: script.MustLetterSeqFrom(c.String()).Appended(sfx), substStr: str_empty},
+			{matchStr: sfx, substStr: str_empty},
 			// {matchTrimStr: script.MustLetterSeqFrom(c.String()).Appended(sfx), subsStr: script.MustLetterSeqFrom("உ")},
 		}
 		return SuffixTrimRule{name: sfx, substRules: substRules}
 	}
 
 	return SuffixTrimRule{name: sfx, substRules: []SubstRule{
-		{matchTrimStr: sfx, subsStr: str_empty},
+		{matchStr: sfx, substStr: str_empty},
 	}}
 }
 
@@ -100,20 +114,21 @@ func (rule SuffixTrimRule) Trim(str script.LetterSeq) []script.LetterSeq {
 	var strs []script.LetterSeq
 	// Try (raw) matching one options
 	for _, sfxRule := range rule.substRules { // No letter-split trim performed here
-		res, ok := script.SuffixTrimmed(str, sfxRule.matchTrimStr)
+		// fmt.Println(str, sfxRule.matchStr)
+		res, ok := script.SuffixTrimmed(str, sfxRule.matchStr)
 		if !ok {
 			continue
 		}
 		// Substitute if there is any substitution specified
-		if sfxRule.subsStr.Len() != 0 {
-			res = script.SuffixAppended(res, sfxRule.subsStr)
+		if sfxRule.substStr.Len() != 0 {
+			res = script.SuffixAppended(res, sfxRule.substStr)
 		}
 		strs = append(strs, res)
 
 		break // One rule match only allowed
 	}
 
-	// Additional handling for V-Suffixes (requires letter-split trimming) (Eg. இல், அம்)
+	// Additional options for V-Suffixes (requires letter-split trimming) (Eg. இல், அம்)
 	sfx := rule.name
 	if sfx.First().IsV() { // Letter-split trim performed here
 		rem, ok := script.VSuffixTrimmed(str, sfx)
@@ -132,17 +147,17 @@ func (rule SuffixTrimRule) String() string {
 	sb := strings.Builder{}
 	sb.WriteString(rule.name.String())
 	for _, r := range rule.substRules {
-		fmt.Fprint(&sb, " | ", r.matchTrimStr.String())
-		if r.subsStr.Len() != 0 {
-			fmt.Fprint(&sb, " : ", r.subsStr.String())
+		fmt.Fprint(&sb, " | ", r.matchStr.String())
+		if r.substStr.Len() != 0 {
+			fmt.Fprint(&sb, " : ", r.substStr.String())
 		}
 	}
 	return sb.String()
 }
 
 type SubstRule struct { // match 'n substitute
-	matchTrimStr script.LetterSeq
-	subsStr      script.LetterSeq
+	matchStr script.LetterSeq
+	substStr script.LetterSeq
 }
 
 func LoadDecompositionRules(fname string) []SuffixTrimmer {

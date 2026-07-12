@@ -287,7 +287,7 @@ func finalTable2() SimpleTable {
 	table := SimpleTable{
 		Title: "Classification (திணை | பால் | எண் | இடம்)",
 		Rows:  8, Columns: 5,
-		ColInfoList: []ColInfo{{"Pronouns", 1}, {"திணை", 1}, {"பால்", 1}, {"எண்", 1}, {"இடம்", 1}},
+		ColInfoList: []ColInfo{{"Pronoun", 1}, {"திணை", 1}, {"பால்", 1}, {"எண்", 1}, {"இடம்", 1}},
 		Cells:       make([][]string, 10),
 	}
 	for r := range 10 {
