@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -18,11 +19,13 @@ func main() {
 }
 
 func launchServer(addr string) {
-	fmt.Println("Started the server", addr)
-	fmt.Println()
-	fmt.Println("To access the server")
-	fmt.Println("1. Open your web browser")
-	fmt.Printf("2. Type \"%s\" in the address bar\n", addr)
+	fmt.Println("Server started @", addr)
+	if strings.HasPrefix(addr, "localhost:") {
+		fmt.Println()
+		fmt.Println("To access the server")
+		fmt.Println("1. Open your web browser")
+		fmt.Printf("2. Type \"%s\" in the address bar\n", addr)
+	}
 
 	if err := http.ListenAndServe(addr, nil); err != nil {
 		fmt.Println(err)

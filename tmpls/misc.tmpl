@@ -13,8 +13,8 @@
 
 {{define "SimpleTable"}}
 <div>
-   <h3>{{.Title}}</h3>
-   <table>
+   <h3 style="white-space:nowrap">{{.Title}}</h3>
+   <table style="white-space:nowrap">
       <tr>
       {{range .ColInfoList}}
          <th colspan="{{.Span}}">{{.Header}}</th>
