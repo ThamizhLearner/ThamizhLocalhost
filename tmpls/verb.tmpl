@@ -5,16 +5,16 @@
    </header>
 
    <section style="display:flex">
-      <nav style="flex:1;background:#fafafa">
-         <ul>
+      <nav style="background:#fafafa;white-space:nowrap;padding:10px">
+         <ul style="padding:0;margin:0">
          {{range .VerbLinks}}
             <li><a href="{{.Url}}">{{.Name}}</a></li>
          {{end}}
          </ul>
       </nav>
 
-      <article style="flex:4;background-color:#fcfcfc">
-         <h1>{{.Verb}}</h1>
+      <article style="background-color:#fcfcfc;white-space:nowrap;padding-left:10px;padding-right:10px">
+         <h1 style="margin:0px">{{.Verb}}</h1>
          <div>
             <span style="font-weight:bold">தொழிற்பெயர் (activity) :</span> {{.VerbalNoun}}
          </div>
