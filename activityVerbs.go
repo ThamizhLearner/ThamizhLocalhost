@@ -50,7 +50,7 @@ func (a verbsActivity) Respond(w http.ResponseWriter, r *http.Request) {
 	for _, v := range verbItems {
 		vname := v.Name.String()
 		verbUrls = append(verbUrls, Hyperlink{
-			Name: fmt.Sprintf("%s (%s)", v.Root, vname),
+			Name: fmt.Sprintf("%s | %s", v.Root, vname),
 			// Name: fmt.Sprintf("%s (%s) - %c", v.Root, vname, v.Type),
 			Url: template.URL(`/verbs?verb=` + vname),
 		})

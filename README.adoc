@@ -4,12 +4,15 @@ Locally hosted server application for Thamizh exploration.
 
 .Activities (Implementation status)
 . *Done*: Syllabification
-. *Work in progress*: Verb list
+. *Work in progress*: Verb list reference
 . *Experimental*: Word decomposition (Composition analysis)
 . *Next*: திருக்குறள் (யாப்பிலக்கணம்) [Thirukkural structure analysis]
 . *Next*: Numbers (cardinal, ordinal, fractions)
 
-== Trying it out
+== App in action
+https://ThamizhConceptApp.OnRender.com
+
+== Try it out (on your computer)
 
 Ensure you have https://go.dev/dl/[go-lang] installed.
 
@@ -19,14 +22,10 @@ Ensure you have https://go.dev/dl/[go-lang] installed.
 . Move into the newly created folder +
 `cd ./ThamizhLocalhost`
 
-. Update dependencies +
-`go mod tidy`
-
-*All is set.*
-
-Start the server +
+. Start the server +
 `go run .`
 
+//
 Follow the instructions as displayed::
 . Open the web browser
 . Enter `localhost:8080` in the address bar to access the local server

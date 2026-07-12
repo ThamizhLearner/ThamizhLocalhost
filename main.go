@@ -3,19 +3,22 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 )
 
 func main() {
-	startServing()
-}
-
-func startServing() {
+	var addr = "localhost:8080"
+	if len(os.Args) == 2 {
+		if os.Args[1] == "Host@Render" {
+			addr = "0.0.0.0:10000"
+		}
+	}
 	setupServer()
-	launchServer("localhost:8080")
+	launchServer(addr)
 }
 
 func launchServer(addr string) {
-	fmt.Println("Started local server", addr)
+	fmt.Println("Started the server", addr)
 	fmt.Println()
 	fmt.Println("To access the server")
 	fmt.Println("1. Open your web browser")
