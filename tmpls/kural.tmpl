@@ -3,11 +3,17 @@
    <p style="font-weight:bold;font-family:courier;color:darkorange">[ Status: Work in progress ]</p>
    <br/>
 
-   <table>
+   <table style="white-space:nowrap">
+      <tr>
+         <th>எண்</th>
+         <th>Line 1</th>
+         <th>Line 2</th>
+      </tr>
       {{range .Kurals}}
          <tr>
             <td>{{.Num}}</td>
-            <td>{{.Line}} || {{.Line2}}</td>
+            <td>{{.Line}}<br/>({{.Syl}})</td>
+            <td>{{.Line2}}<br/>({{.Syl2}})</td>
          </tr>
       {{end}}
    </table>
