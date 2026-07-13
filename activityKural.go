@@ -5,6 +5,9 @@ import (
 	"html/template"
 	"net/http"
 	"os"
+	"strings"
+
+	script "github.com/ThamizhLearner/Thamizh"
 )
 
 type kuralActivity struct{}
@@ -23,6 +26,7 @@ func (a kuralActivity) Respond(w http.ResponseWriter, r *http.Request) {
 type kural struct {
 	Num         int
 	Line, Line2 string
+	Syl, Syl2   string
 }
 
 func LoadAllKurals(fn string) []kural {
@@ -40,7 +44,9 @@ func LoadAllKurals(fn string) []kural {
 		if !scanner.Scan() {
 			panic("Unexpected EOF")
 		}
-		kurals = append(kurals, kural{num, line, scanner.Text()})
+		line2 := scanner.Text()
+		syl, syl2 := SyllabifyLong(line), SyllabifyLong(line2)
+		kurals = append(kurals, kural{num, line, line2, syl, syl2})
 		num++
 	}
 
@@ -48,4 +54,16 @@ func LoadAllKurals(fn string) []kural {
 		panic(err)
 	}
 	return kurals
+}
+
+func SyllabifyLong(str string) string {
+	strs := strings.Split(str, " ")
+	for i, ustr := range strs {
+		str, ok := script.LetterSeqFrom(ustr)
+		if !ok {
+			continue
+		}
+		strs[i], _ = script.SyllabifiedUStr(str, "-")
+	}
+	return strings.Join(strs, " ")
 }
