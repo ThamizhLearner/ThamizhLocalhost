@@ -1,0 +1,15 @@
+{{define "ActivityPanel"}}
+   <h1>Thirukkural திருக்குறள்</h1>
+   <p style="font-weight:bold;font-family:courier;color:darkorange">[ Status: Work in progress ]</p>
+   <br/>
+
+   <table>
+      {{range .Kurals}}
+         <tr>
+            <td>{{.Num}}</td>
+            <td>{{.Line}} || {{.Line2}}</td>
+         </tr>
+      {{end}}
+   </table>
+
+{{end}}
