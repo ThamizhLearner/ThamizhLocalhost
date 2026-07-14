@@ -3,7 +3,7 @@
 Locally hosted (_on your computer_) server application for Thamizh exploration.
 
 == App preview
-
+This web app is also hosted here for quick preview. +
 https://ThamizhConceptApp.OnRender.com
 
 == Try it out (_on your computer_)
