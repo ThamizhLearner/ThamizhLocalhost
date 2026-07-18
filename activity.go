@@ -27,6 +27,7 @@ var activities []Activity = []Activity{
 var currentActivity = activities[0]
 
 func getDefaultActivity() Activity { return activities[0] }
+func getCurrentActivity() Activity { return currentActivity }
 
 func selectActivityById(id string) Activity {
 	// Note: We only update the current activity, if the activity name matches!
