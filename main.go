@@ -33,20 +33,26 @@ func launchServer(addr string) {
 }
 
 func setupServer() {
-	http.HandleFunc("GET /", activityPresenter)
-	http.HandleFunc("POST /", activityPresenter)
+	http.HandleFunc("GET /", defaultActivityPresenter)
+	http.HandleFunc("POST /", defaultActivityPresenter)
+	http.HandleFunc("GET /ping", pingResponder)
 	http.HandleFunc("GET /{activity}", activityRequester)
 	fs := http.FileServer(http.Dir("style"))
 	http.Handle("GET /style.css", fs)
 }
 
-func activityPresenter(w http.ResponseWriter, r *http.Request) {
-	activity := getActivity()
+func defaultActivityPresenter(w http.ResponseWriter, r *http.Request) {
+	activity := getDefaultActivity()
 	activity.Respond(w, r)
 }
 
 func activityRequester(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("activity")
-	selectActivityById(id)
-	activityPresenter(w, r)
+	activity := selectActivityById(id)
+	activity.Respond(w, r)
+}
+
+// Gets called by 3rd-party keep-alive service!
+func pingResponder(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Ping'd")
 }
