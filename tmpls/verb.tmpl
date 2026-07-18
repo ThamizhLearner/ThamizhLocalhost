@@ -5,10 +5,14 @@
    </header>
 
    <section style="display:flex">
-      <nav style="background:#fafafa;white-space:nowrap;padding:10px">
+      <nav style="background:#eee;white-space:nowrap;padding:10px">
          <ul style="padding:0;margin:0">
          {{range .VerbLinks}}
-            <li><a href="{{.Url}}">{{.Name}}</a></li>
+            {{if .Selected}}
+               <li style="background:lightcyan;margin-bottom:3px;text-align:center"><a href="{{.Url}}">{{.Name}}</a></li>
+            {{else}}
+               <li style="background:#fafafa;margin-bottom:3px;text-align:center"><a href="{{.Url}}">{{.Name}}</a></li>
+            {{end}}
          {{end}}
          </ul>
       </nav>
