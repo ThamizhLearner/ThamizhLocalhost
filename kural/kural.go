@@ -1,6 +1,7 @@
 package kural2
 
 import (
+	"fmt"
 	"strings"
 
 	script "github.com/ThamizhLearner/Thamizh"
@@ -21,12 +22,25 @@ type rhythm struct {
 	Captures []captured
 }
 
-func GetRhythmBeats(captures []captured) string {
+// Gets "நிரை, நேர், நேர்" captured beat sequence.
+func GetRhythmBeats(captures []captured, withCatpure bool) string {
 	var strs []string
 	for _, capture := range captures {
-		strs = append(strs, captureCodes[capture.codeIdx])
+		str := captureCodes[capture.codeIdx]
+		if withCatpure {
+			str += fmt.Sprintf(" {%s}", capture.str)
+		}
+		strs = append(strs, str)
 	}
-	return strings.Join(strs, ", ")
+	return strings.Join(strs, " | ")
+}
+
+func RhythmBreakup(captures []captured) string {
+	var strs []string
+	for _, capture := range captures {
+		strs = append(strs, capture.str)
+	}
+	return strings.Join(strs, "/")
 }
 
 func GetRhythmBaseMap() map[string]rhythm {

@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"html/template"
 	"net/http"
 	"os"
@@ -84,35 +83,29 @@ var rhythmBaseMap = kural2.GetRhythmBaseMap()
 func createThirukkuralRythmTable(k string) SimpleTable {
 	var t = SimpleTable{
 		Title:       "அலகிட்டு வாய்ப்பாடு",
-		ColInfoList: []ColInfo{{"சீர்", 1}, {"அசை", 1}, {"வாய்ப்பாடு", 1}},
+		ColInfoList: []ColInfo{{"சீர்", 2}, {"அசை", 1}, {"வாய்ப்பாடு", 2}},
 		Cells:       make([][]string, 7),
 	}
-	// fmt.Println(k)
 	strs := strings.Split(k, " ")
-	if len(strs) != 7 {
-		fmt.Println(k)
-		panic("Expected 7 சீர்கள்")
-	}
 	for i, str := range strs {
-		if i == 7 {
-			break
-		}
-		row := make([]string, 3)
+		row := make([]string, 5)
 		t.Cells[i] = row
-		ok := !strings.Contains(str, "ஃ")
-		if !ok {
-			row[0] = str
+		row[0] = str
+		if strings.Contains(str, "ஃ") {
 			row[1] = "Failed"
 			row[2] = "Failed"
+			row[3] = "Failed"
+			row[4] = "Failed"
 			continue
 		}
 		ls := script.MustLetterSeqFrom(str)
 		captures := kural2.CaptureRhythm(ls, i == 6)
 		key := kural2.CreateKey(captures)
-		rhythm := rhythmBaseMap[key]
-		row[0] = str
-		row[1] = kural2.GetRhythmBeats(captures)
-		row[2] = rhythm.Value
+		baseRhythm := rhythmBaseMap[key]
+		row[1] = kural2.RhythmBreakup(captures)
+		row[2] = kural2.GetRhythmBeats(captures, false)
+		row[3] = baseRhythm.Value
+		row[4] = kural2.RhythmBreakup(baseRhythm.Captures)
 	}
 
 	return t
