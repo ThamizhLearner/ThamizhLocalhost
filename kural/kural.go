@@ -18,7 +18,7 @@ import (
 
 // Rhythm of beats of [நேர், நிரை, நேர்பு, நிரைபு]
 type rhythm struct {
-	Value    string
+	UStr     string
 	Captures []captured
 }
 
@@ -28,7 +28,7 @@ func GetRhythmBeats(captures []captured, withCatpure bool) string {
 	for _, capture := range captures {
 		str := captureCodes[capture.codeIdx]
 		if withCatpure {
-			str += fmt.Sprintf(" {%s}", capture.str)
+			str += fmt.Sprintf(" {%s}", capture.ufrag)
 		}
 		strs = append(strs, str)
 	}
@@ -38,7 +38,7 @@ func GetRhythmBeats(captures []captured, withCatpure bool) string {
 func RhythmBreakup(captures []captured) string {
 	var strs []string
 	for _, capture := range captures {
-		strs = append(strs, capture.str)
+		strs = append(strs, capture.ufrag)
 	}
 	return strings.Join(strs, "/")
 }
@@ -64,7 +64,7 @@ func GetRhythmBaseMap() map[string]rhythm {
 	for _, str := range strs {
 		s := script.MustLetterSeqFrom(str)
 		captures := CaptureRhythm(s, true) // Note: Reduction == true, is fine here!
-		dict[CreateKey(captures)] = rhythm{Value: str, Captures: captures}
+		dict[CreateKey(captures)] = rhythm{UStr: str, Captures: captures}
 	}
 	return dict
 }
@@ -81,7 +81,7 @@ var captureCodes = []string{"நேர்", "நிரை", "நேர்பு"
 
 // சீர் decomposition capture
 type captured struct {
-	str     string
+	ufrag   string
 	codeIdx uint8
 }
 
@@ -94,7 +94,7 @@ func CaptureRhythm(s script.LetterSeq, reduced bool) []captured {
 	for i, syl := range syls {
 		if pending {
 			// Form a நிரை
-			captures = append(captures, captured{str: syls[i-1].String() + syls[i].String(), codeIdx: 1})
+			captures = append(captures, captured{ufrag: syls[i-1].String() + syls[i].String(), codeIdx: 1})
 			pending = false
 			continue
 		}
@@ -104,10 +104,10 @@ func CaptureRhythm(s script.LetterSeq, reduced bool) []captured {
 			continue
 		}
 		// Form a நேர்
-		captures = append(captures, captured{str: syls[i].String(), codeIdx: 0})
+		captures = append(captures, captured{ufrag: syls[i].String(), codeIdx: 0})
 	}
 	if pending { // Unconsumed pending == நேர்
-		captures = append(captures, captured{str: syls[len(syls)-1].String(), codeIdx: 0})
+		captures = append(captures, captured{ufrag: syls[len(syls)-1].String(), codeIdx: 0})
 	}
 
 	// Optionally, attempt reducing to single "நேர்பு" | "நிரைபு" form.
@@ -116,12 +116,12 @@ func CaptureRhythm(s script.LetterSeq, reduced bool) []captured {
 		if syl.Len() == 1 {
 			// The last letter better be CV letter! [Unless syllabification is broken!]
 			_, v := syl.Nth(0).MustSplitCV()
-			if v.Is(letterU) {
+			if v.Is(உ) {
 				var codeIdx uint8 = 2
 				if captures[0].codeIdx == 1 {
 					codeIdx = 3
 				}
-				return []captured{{str: s.String(), codeIdx: codeIdx}}
+				return []captured{{ufrag: s.String(), codeIdx: codeIdx}}
 			}
 		}
 	}
@@ -129,4 +129,5 @@ func CaptureRhythm(s script.LetterSeq, reduced bool) []captured {
 	return captures
 }
 
-var letterU = script.MustLetterFrom("உ")
+// Vowel Letter உ
+var உ = script.MustLetterFrom("உ")
