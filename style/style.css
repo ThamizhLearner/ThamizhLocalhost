@@ -1,6 +1,8 @@
 body {
    font-family: sans-serif;
    background-color: #f7f7f7;
+   margin: auto;
+   width:90%;
 }
 
 * {
@@ -8,8 +10,8 @@ body {
 }
 
 input[type="submit"] {
-   padding-left: 20px;
-   padding-right: 20px;
+   padding-left: 10px;
+   padding-right: 10px;
 }
 
 a {
@@ -20,7 +22,7 @@ a {
 table {
    border:1px solid black;
    border-collapse:collapse;
-   font-family: monospace;
+   /* font-family: monospace; */
 }
 
 th, td {

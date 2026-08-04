@@ -1,5 +1,5 @@
 {{define "ActivityPanel"}}
-   <h1>Numbers</h1>
+   <h2>Numbers</h2>
    <p style="font-weight:bold;font-family:courier;color:darkorange">[ Status: Work in progress ]</p>
 
    {{template "SimpleTable" .NumTable}}
@@ -8,7 +8,7 @@
 
 {{define "SimpleTable"}}
 <div>
-   <h3>{{.Title}}</h3>
+   <h4>{{.Title}}</h4>
    <table>
       <tr>
       {{range .ColInfoList}}
