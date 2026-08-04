@@ -1,8 +1,6 @@
 {{define "ActivityPanel"}}
-   <header>
-   <h1>Verb forms</h1>
+   <h2>Verb forms</h2>
    <p style="font-weight:bold;font-family:courier;color:darkorange">[ Status: Work in progress ]</p>
-   </header>
 
    <section style="display:flex">
       <nav style="background:#eee;white-space:nowrap;padding:10px">
@@ -18,7 +16,7 @@
       </nav>
 
       <article style="background-color:#fcfcfc;white-space:nowrap;padding-left:10px;padding-right:10px">
-         <h1 style="margin:0px">{{.Verb}}</h1>
+         <h2 style="margin:0px">{{.Verb}}</h2>
          <div>
             <span style="font-weight:bold">தொழிற்பெயர் (activity) :</span> {{.VerbalNoun}}
          </div>
@@ -28,7 +26,7 @@
 
          <p/>
          <hr/>
-         <h2>Alternative perspective</h2>
+         <h3>Alternative perspective</h3>
 
          {{template "SimpleTable" .PhraseTable}}
          {{template "SimpleTable" .SylPhraseTable}}
@@ -38,7 +36,7 @@
 
 {{define "SimpleTable"}}
 <div>
-   <h3>{{.Title}}</h3>
+   <h4>{{.Title}}</h4>
    <table>
       <tr>
       {{range .ColInfoList}}

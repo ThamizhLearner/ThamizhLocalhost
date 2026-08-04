@@ -1,12 +1,16 @@
 {{define "ActivityPanel"}}
-   <header>
-   <h1>Misc</h1>
-   </header>
+   <h2>Misc information</h2>
 
-   {{template "SimpleTable" .InfoTable}}
+   <h3>Misc அசை references</h3>
+   <hr/>
    {{template "SimpleTable" .NerTable}}
    {{template "SimpleTable" .NiraiTable}}
    {{template "SimpleTable" .RhythmTable}}
+
+   <hr/>
+   <h3>Misc lookups</h3>
+   <hr/>
+   {{template "SimpleTable" .InfoTable}}
 
    <h3>Classification of தமிழ் verbs</h3>
    <div class="mermaid">
@@ -17,7 +21,7 @@
 
 {{define "SimpleTable"}}
 <div>
-   <h3 style="white-space:nowrap">{{.Title}}</h3>
+   <h4 style="white-space:nowrap">{{.Title}}</h4>
    <table style="white-space:nowrap">
       <tr>
       {{range .ColInfoList}}

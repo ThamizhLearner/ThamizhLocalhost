@@ -1,18 +1,19 @@
 {{define "ActivityPanel"}}
-   <h1>Syntax composition analysis</h1>
+   <h2>Syntax composition analysis</h2>
    <p style="font-weight:bold;font-family:courier;color:orangered">[ Status: Experimental ]</p>
    <br/>
 
-   <form method="post" style="font-size:2em">
-      <input type="text" name="inpStr" required style="font-size:inherit"/>
-      <input type="submit" value="Deconstruct" style="font-size:inherit;font-family:inherit"/>
+   <form method="post">
+      <input type="text" name="inpStr" required/>
+      <input type="submit" value="Deconstruct"/>
    </form>
 
    {{if .ResStrs}}
       <div>
-         <span style="font-size:3em">{{.InpStr}}</span> <br/>
+         <br/>
+         <span style="font-size:1.25em">{{.InpStr}}</span> <br/>
          {{range .ResStrs}}
-           <span style="font-size:2em">{{.}}</span> <br/>
+           <span style="font-size:1.25em">{{.}}</span> <br/>
          {{end}}
          <br/>
       </div>

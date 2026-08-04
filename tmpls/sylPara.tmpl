@@ -1,20 +1,19 @@
 {{define "ActivityPanel"}}
-   <h1>Syllabify தமிழ் text</h1>
-   <br/>
+   <h2>Syllabify தமிழ் text</h2>
 
-   <form method="post" style="font-size:1.5em">
+   <form method="post">
       <label for="inpStr">Type in or paste Thamizh text:</label>
       <br>
-      <textarea id="inpStr" name="inpStr" rows="4" cols="48" required style="font-size:inherit"></textarea>
+      <textarea id="inpStr" name="inpStr" rows="4" cols="64" required></textarea>
       <br>
-      <input type="submit" value="Syllabify" style="font-size:inherit;font-family:inherit"/>
+      <input type="submit" value="Syllabify"/>
    </form>
 
    {{if .SylStr}}
       <div style="font-size:1.25em">
          <p>{{.InpStr}}</p>
       </div>
-      <div style="font-size:1.5em">
+      <div style="font-size:1.25em">
          <p>{{.SylStr}}</p>
       </div>
    {{else}}
