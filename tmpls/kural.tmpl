@@ -1,9 +1,9 @@
 {{define "ActivityPanel"}}
    <h2>Thirukkural திருக்குறள்</h2>
-   <p style="font-weight:bold;font-family:courier;color:darkorange">[ Status: Work in progress ]</p>
+   <p><span class="status_wip">[ Status: Work in progress ]</span></p>
    <br/>
 
-   <table style="white-space:nowrap">
+   <table style="background-color:#fcfcfc">
       <tr>
          <th>எண்</th>
          <th>குறள்</th>
@@ -29,9 +29,9 @@
 {{end}}
 
 {{define "SimpleTable2"}}
-<div>
-   <h3 style="white-space:nowrap">{{.Title}}</h3>
-   <table style="white-space:nowrap">
+<div class="stdTable">
+   <h3>{{.Title}}</h3>
+   <table>
       <tr>
       {{range .ColInfoList}}
          <th colspan="{{.Span}}">{{.Header}}</th>

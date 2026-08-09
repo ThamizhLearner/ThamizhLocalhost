@@ -20,9 +20,9 @@
 {{end}}
 
 {{define "SimpleTable"}}
-<div>
-   <h4 style="white-space:nowrap">{{.Title}}</h4>
-   <table style="white-space:nowrap">
+<div class="stdTable">
+   <h4>{{.Title}}</h4>
+   <table>
       <tr>
       {{range .ColInfoList}}
          <th colspan="{{.Span}}">{{.Header}}</th>

@@ -45,11 +45,11 @@ func createSylGraph(w string, syls []string) string {
 	sb.WriteString("graph TB\n")
 	for idx, syl := range syls {
 		if idx == 0 {
-			sb.WriteString(fmt.Sprintf("N[%v] --> ", w))
+			sb.WriteString(fmt.Sprintf("N(%v) --> ", w))
 		} else {
 			sb.WriteString("N --> ")
 		}
-		sb.WriteString(fmt.Sprintf("N%v[%v]\n", idx, syl))
+		sb.WriteString(fmt.Sprintf("N%v(%v)\n", idx, syl))
 	}
 	return sb.String()
 }
