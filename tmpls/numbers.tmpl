@@ -1,13 +1,13 @@
 {{define "ActivityPanel"}}
    <h2>Numbers</h2>
-   <p style="font-weight:bold;font-family:courier;color:darkorange">[ Status: Work in progress ]</p>
+   <p><span class="status_wip">[ Status: Work in progress ]</span></p>
 
    {{template "SimpleTable" .NumTable}}
 
 {{end}}
 
 {{define "SimpleTable"}}
-<div>
+<div class="stdTable">
    <h4>{{.Title}}</h4>
    <table>
       <tr>

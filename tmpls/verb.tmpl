@@ -1,9 +1,9 @@
 {{define "ActivityPanel"}}
    <h2>Verb forms</h2>
-   <p style="font-weight:bold;font-family:courier;color:darkorange">[ Status: Work in progress ]</p>
+   <p><span class="status_wip">[ Status: Work in progress ]</span></p>
 
    <section style="display:flex">
-      <nav style="background:#eee;white-space:nowrap;padding:10px">
+      <nav style="background:#eee;padding:10px">
          <ul style="padding:0;margin:0">
          {{range .VerbLinks}}
             {{if .Selected}}
@@ -15,7 +15,7 @@
          </ul>
       </nav>
 
-      <article style="background-color:#fcfcfc;white-space:nowrap;padding-left:10px;padding-right:10px">
+      <article style="background-color:#fcfcfc;padding-left:10px;padding-right:10px">
          <h2 style="margin:0px">{{.Verb}}</h2>
          <div>
             <span style="font-weight:bold">தொழிற்பெயர் (activity) :</span> {{.VerbalNoun}}
@@ -35,7 +35,7 @@
 {{end}}
 
 {{define "SimpleTable"}}
-<div>
+<div class="stdTable">
    <h4>{{.Title}}</h4>
    <table>
       <tr>
