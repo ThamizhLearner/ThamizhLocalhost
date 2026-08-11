@@ -32,7 +32,7 @@ func (a sylParaActivity) Respond(w http.ResponseWriter, r *http.Request) {
 				strs[i], _ = script.SyllabifiedUStr(str, "-") // Replace with syllabified version
 			}
 		}
-		seed.SylStr = strings.Join(strs, " | ")
+		seed.SylStr = strings.Join(strs, " ")
 	}
 
 	var tmpl = template.Must(template.ParseFiles("tmpls/index.tmpl", "tmpls/sylPara.tmpl"))

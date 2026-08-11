@@ -10,11 +10,16 @@
    </form>
 
    {{if .SylStr}}
-      <div style="font-size:1.25em">
-         <p>{{.InpStr}}</p>
-      </div>
-      <div style="font-size:1.25em">
-         <p>{{.SylStr}}</p>
+      <br><br>
+      <div>
+         <table class="sylWord" style="font-size:2em;white-space:normal">
+            <tr>
+               <td>{{.InpStr}}</td>
+            </tr>
+            <tr>
+               <td>{{.SylStr}}</td>
+            </tr>
+         </table>
       </div>
    {{else}}
       <p><span style="font-weight:bold">Usage example:</span>

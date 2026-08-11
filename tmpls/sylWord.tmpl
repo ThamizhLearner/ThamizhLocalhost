@@ -7,15 +7,22 @@
    </form>
 
    {{if .SylStr}}
+      <br><br>
       <div>
-         <br/>
-         <span style="font-size:1.25em">{{.InpStr}}</span> <br/>
-         <span>Letters: {{.LetterCount}}</span> <br/>
-         <span style="font-size:1.25em">{{.SylStr}}</span> <br/>
-         <span>Syllabic sounds: {{.SylCount}}</span>
+         <table class="sylWord">
+            <tr>
+               <td width="40%"><span style="font-size:2em">{{.InpStr}}</span></td>
+               <td><span style="font-size:2em">{{.SylStr}}</span></td>
+            </tr>
+
+            <tr>
+               <td><span style="font-size:1em">Letter count: {{.LetterCount}}</span></td>
+               <td><span style="font-size:1em">Syllabic sounds: {{.SylCount}}</span></td>
+            </tr>
+         </table>
       </div>
 
-      <br/> <br/>
+      <br><br>
       <div class="mermaid">
          {{.Graph}}
       </div>
