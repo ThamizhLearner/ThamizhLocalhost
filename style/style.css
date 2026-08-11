@@ -21,13 +21,13 @@ a {
 
 .status_experimental {
    background-color: yellow;
-   color: orangered;
-   font-size: 0.67em;
+   color: crimson;
+   font-size: 0.8em;
 }
 .status_wip {
    background-color: yellow;
-   color: darkorange;
-   font-size: 0.67em;
+   color: crimson;
+   font-size: 0.8em;
 }
 
 .mainMenu {
@@ -64,8 +64,13 @@ a {
    padding: 0px 10px;
 }
 
-table {
-   border-collapse: collapse;
+.sylWord {
+   text-align: center;
+   background-color: #fcfcfc;
+}
+.sylWord td {
+   border: 1px solid lightgray;
+   padding: 10px 25px;
 }
 
 ul, ol {
