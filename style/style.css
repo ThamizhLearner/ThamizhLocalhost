@@ -6,8 +6,6 @@ body {
 * {
    color: indigo;
    white-space: nowrap;
-
-   box-sizing: border-box;
 }
 
 input[type="submit"] {
@@ -71,6 +69,15 @@ a {
 .sylWord td {
    border: 1px solid lightgray;
    padding: 10px 25px;
+}
+
+.table {
+   border-collapse: collapse;
+   background-color: #fcfcfc;
+}
+.table th, td {
+   border: 1px solid gray;
+   padding: 0px 10px;
 }
 
 ul, ol {

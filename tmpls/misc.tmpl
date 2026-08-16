@@ -1,18 +1,17 @@
 {{define "ActivityPanel"}}
    <h2>Misc information</h2>
 
-   <h3>Misc அசை references</h3>
-   <hr/>
    {{template "SimpleTable" .NerTable}}
+   <br>
    {{template "SimpleTable" .NiraiTable}}
+   <br>
    {{template "SimpleTable" .RhythmTable}}
 
-   <hr/>
-   <h3>Misc lookups</h3>
-   <hr/>
+   <br>
    {{template "SimpleTable" .InfoTable}}
 
-   <h3>Classification of தமிழ் verbs</h3>
+   <br>
+   <h4 style="padding: 0px 10px">Classification of தமிழ் verbs</h4>
    <div class="mermaid">
       {{.VerbGraph}}
    </div>
