@@ -16,17 +16,13 @@ func (a decompActivity) Respond(w http.ResponseWriter, r *http.Request) {
 	post := r.Method == http.MethodPost // GET or POST response
 
 	seed := struct {
-		InpStr  string
-		ResStrs []string
+		InpStr      string
+		ResStrsList [][]string
 	}{"", nil}
 
 	if post {
 		seed.InpStr = strings.TrimSpace(r.FormValue("inpStr"))
-		seed.ResStrs = append(seed.ResStrs, "---------------------")
-		for _, strs := range decomposition.DecomposeWord(seed.InpStr) {
-			seed.ResStrs = append(seed.ResStrs, strs...)
-			seed.ResStrs = append(seed.ResStrs, "---------------------")
-		}
+		seed.ResStrsList = decomposition.DecomposeWord(seed.InpStr)
 	}
 
 	var tmpl = template.Must(template.ParseFiles("tmpls/index.tmpl", "tmpls/decomp.tmpl"))

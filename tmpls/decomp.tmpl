@@ -8,14 +8,21 @@
       <input type="submit" value="Deconstruct"/>
    </form>
 
-   {{if .ResStrs}}
+   {{if .ResStrsList}}
+      <br><br>
       <div>
-         <br/>
-         <span style="font-size:1.25em">{{.InpStr}}</span> <br/>
-         {{range .ResStrs}}
-           <span style="font-size:1.25em">{{.}}</span> <br/>
+         <table class="table" style="font-size:1.25em">
+         {{range .ResStrsList}}
+            <tr>
+            <th>{{$.InpStr}}</th>
+            <td>
+            {{range .}}
+               <span>{{.}}</span> <br/>
+            {{end}}
+            </td>
+            </tr>
          {{end}}
-         <br/>
+         </table>
       </div>
    {{else}}
       <p>Usage example: Type in "மரங்கள்" to see its composition</p>
