@@ -23,19 +23,13 @@ var activities []Activity = []Activity{
 	kuralActivity{},
 }
 
-// Currently active activity
-var currentActivity = activities[0]
-
 func getDefaultActivity() Activity { return activities[0] }
-func getCurrentActivity() Activity { return currentActivity }
 
 func selectActivityById(id string) Activity {
-	// Note: We only update the current activity, if the activity name matches!
 	for _, a := range activities {
 		if a.GetID() == id {
-			currentActivity = a
-			break
+			return a
 		}
 	}
-	return currentActivity
+	return getDefaultActivity()
 }
