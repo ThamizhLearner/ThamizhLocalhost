@@ -34,9 +34,9 @@ func launchServer(addr string) {
 
 func setupServer() {
 	http.HandleFunc("GET /", defaultActivityPresenter)
-	http.HandleFunc("POST /", defaultActivityPresenter2)
+	http.HandleFunc("POST /{activity}", activityPresenter)
 	http.HandleFunc("GET /ping", pingResponder)
-	http.HandleFunc("GET /{activity}", activityRequester)
+	http.HandleFunc("GET /{activity}", activityPresenter)
 	fs := http.FileServer(http.Dir("style"))
 	http.Handle("GET /style.css", fs)
 }
@@ -46,12 +46,7 @@ func defaultActivityPresenter(w http.ResponseWriter, r *http.Request) {
 	activity.Respond(w, r)
 }
 
-func defaultActivityPresenter2(w http.ResponseWriter, r *http.Request) {
-	activity := getCurrentActivity()
-	activity.Respond(w, r)
-}
-
-func activityRequester(w http.ResponseWriter, r *http.Request) {
+func activityPresenter(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("activity")
 	activity := selectActivityById(id)
 	activity.Respond(w, r)
