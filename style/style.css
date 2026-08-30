@@ -1,10 +1,16 @@
+:root {
+   --page-background: mintcream;
+   --font-color: indigo;
+   --font: monospace;
+}
+
 body {
-   font-family: monospace;
-   background-color: lightgoldenrodyellow;
+   font-family: var(--font);
+   background-color: var(--page-background);
 }
 
 * {
-   color: indigo;
+   color: var(--font-color);
    white-space: nowrap;
 }
 
@@ -16,6 +22,23 @@ input[type="submit"] {
 a {
    text-decoration: none;
 }
+
+table {
+   border-collapse: collapse;
+   background-color: #fcfcfc;
+}
+table th,
+table td {
+   border: 1px solid darkcyan;
+   padding: 0px 50px;
+}
+
+ul,
+ol {
+   list-style: none;
+}
+
+/* Custom classes */
 
 .status_experimental {
    background-color: yellow;
@@ -31,6 +54,10 @@ a {
 .mainMenu {
    font-size: 1em;
 }
+.mainMenu table {
+   border-collapse: separate;
+   border-spacing: 5px 0px;
+}
 .mainMenu td {
    padding: 0px;
    border: 1px solid teal;
@@ -39,10 +66,6 @@ a {
 }
 .mainMenu td:hover {
    background-color: yellow;
-}
-.mainMenu table {
-   border-collapse: separate;
-   border-spacing: 5px 0px;
 }
 .mainMenu a {
    display: block;
@@ -54,32 +77,28 @@ a {
    border-collapse: collapse;
    background-color: lightcyan;
 }
-.stdTable th, td {
+.stdTable th {
    border: 1px solid darkgray;
    padding: 2px 8px;
+   background-color: lavender;
+}
+.stdTable td {
+   border: 1px solid darkgray;
+   padding: 2px 8px;
+}
+.stdTable tr:hover {
+   background-color: lavender;
 }
 .stdTable h4 {
    padding: 0px 10px;
 }
 
-.sylWord {
+.table {
    text-align: center;
    background-color: #fcfcfc;
 }
-.sylWord td {
+.table td,
+.table th {
    border: 1px solid lightgray;
    padding: 10px 25px;
-}
-
-.table {
-   border-collapse: collapse;
-   background-color: #fcfcfc;
-}
-.table th, td {
-   border: 1px solid gray;
-   padding: 0px 10px;
-}
-
-ul, ol {
-   list-style: none;
 }
