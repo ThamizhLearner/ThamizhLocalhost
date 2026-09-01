@@ -1,6 +1,7 @@
 {{define "ActivityPanel"}}
    <h2>Misc information</h2>
 
+   {{template "SimpleTable2D" .CVTable}}
    {{template "SimpleTable" .NerTable}}
    <br>
    {{template "SimpleTable" .NiraiTable}}
@@ -34,6 +35,37 @@
             <td>
             {{.}}
             </td>
+         {{end}}
+         </tr>
+      {{end}}
+   </table>
+</div>
+{{end}}
+
+{{define "SimpleTable2D"}}
+<div>
+   <h4 style="padding:0px 10px">{{.Title}}</h4>
+   <table class="table2d">
+      {{range $r, $rv := .Cells}}
+         <tr>
+         {{range $c, $cv := .}}
+            {{ if and (eq $c 0) (eq $r 0) }}
+               <th>
+                  {{.}}
+               </th>
+            {{ else if eq $c 0 }}
+               <th class="row">
+               {{.}}
+               </th>
+            {{ else if eq $r 0 }}
+               <th class="col">
+               {{.}}
+               </th>
+            {{ else }}
+               <td>
+               {{.}}
+               </td>
+            {{ end }}
          {{end}}
          </tr>
       {{end}}

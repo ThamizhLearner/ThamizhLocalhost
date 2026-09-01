@@ -29,7 +29,7 @@ table {
 }
 table th,
 table td {
-   border: 1px solid darkcyan;
+   border: 1px solid darkslateblue;
    padding: 0px 50px;
 }
 
@@ -101,4 +101,41 @@ ol {
 .table th {
    border: 1px solid lightgray;
    padding: 10px 25px;
+}
+
+table.table2d {
+   overflow: hidden;
+   font-size: 1rem;
+   border: 3px solid orange;
+   background-color: transparent;
+}
+.table2d tr:hover {
+   background-color: yellow;
+}
+.table2d td {
+   padding: 0px 8px;
+   position: relative;
+   outline: 0;
+   text-align: center; vertical-align: middle;
+   border: 0.2px solid lightgray;
+}
+.table2d th {
+   padding: 0px 8px;
+   position: relative;
+   outline: 0;
+   background-color: lavender;
+   font-size: 1.05em;
+   text-align: center; vertical-align: middle;
+   border: 1px solid lightgray;
+}
+.table2d td:hover::after,
+.table2d th:hover::after {
+   content: "";
+   position: absolute;
+   background-color: yellow;
+   left: 0;
+   top: -5000px;
+   height: 10000px;
+   width: 100%;
+   z-index: -1;
 }
