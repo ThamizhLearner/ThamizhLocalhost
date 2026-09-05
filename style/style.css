@@ -66,6 +66,8 @@ ol {
 }
 .mainMenu td:hover {
    background-color: yellow;
+   box-shadow: 0 0 4px red;
+   border: 1px solid transparent;
 }
 .mainMenu a {
    display: block;
@@ -106,27 +108,35 @@ ol {
 table.table2d {
    overflow: hidden;
    font-size: 1rem;
-   border: 3px solid orange;
+   border: 2px solid orange;
    background-color: transparent;
 }
 .table2d tr:hover {
    background-color: yellow;
 }
 .table2d td {
-   padding: 0px 8px;
+   padding: 0px 16px;
    position: relative;
    outline: 0;
    text-align: center; vertical-align: middle;
    border: 0.2px solid lightgray;
 }
 .table2d th {
-   padding: 0px 8px;
+   padding: 0px 16px;
    position: relative;
    outline: 0;
-   background-color: lavender;
+   background-color: rgb(70 130 180 / 20%);
    font-size: 1.05em;
    text-align: center; vertical-align: middle;
    border: 1px solid lightgray;
+}
+.table2d th:hover {
+   background-color: rgb(70 130 180 / 40%);
+   color: black;
+}
+.table2d td:hover {
+   background-color: lightgreen;
+   color: black;
 }
 .table2d td:hover::after,
 .table2d th:hover::after {
@@ -138,4 +148,7 @@ table.table2d {
    height: 10000px;
    width: 100%;
    z-index: -1;
+}
+.table2d tr:first-child th:first-child {
+  background-color: orange;
 }
