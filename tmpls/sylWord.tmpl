@@ -30,5 +30,30 @@
       <p><span style="font-weight:bold">Usage example:</span>
       Type in "<span style="font-weight:bold">இலக்கணம்</span>" to see its syllabified form.
       </p>
+      {{if .SylStrEg}}
+         <br>
+         <div style="background-color:beige;padding:20px">
+         <p><span style="font-weight:bold">Example preview:</span>
+          Syllabification of <span style="font-weight:bold">{{.InpStr}}</span></p>
+         <div>
+            <table class="table">
+               <tr style="font-size:2em">
+                  <td width="40%">{{.InpStr}}</td>
+                  <td>{{.SylStrEg}}</td>
+               </tr>
+
+               <tr style="font-size:1em">
+                  <td>Letter count: {{.LetterCount}}</td>
+                  <td>Syllabic sounds: {{.SylCount}}</td>
+               </tr>
+            </table>
+         </div>
+
+         <br><br>
+         <div class="mermaid">
+            {{.Graph}}
+         </div>
+         </div>
+      {{end}}
    {{end}}
 {{end}}

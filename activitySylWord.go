@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"html/template"
+	"math/rand/v2"
 	"net/http"
 	"strings"
 
@@ -20,9 +21,10 @@ func (a sylWordActivity) Respond(w http.ResponseWriter, r *http.Request) {
 		InpStr      string
 		LetterCount int
 		SylStr      string
+		SylStrEg    string
 		SylCount    int
 		Graph       string
-	}{"", 0, "", 0, ""}
+	}{"", 0, "", "", 0, ""}
 
 	if post {
 		seed.InpStr = strings.TrimSpace(r.FormValue("inpStr"))
@@ -31,6 +33,19 @@ func (a sylWordActivity) Respond(w http.ResponseWriter, r *http.Request) {
 			seed.LetterCount = str.Len()
 			seed.SylStr, seed.SylCount = script.SyllabifiedUStr(str, "-")
 			seed.Graph = createSylGraph(seed.InpStr, strings.Split(seed.SylStr, "-"))
+		}
+	} else {
+		// Basically, there is no input from the user! And we simply want to show the expected result.
+
+		strs := []string{"தொல்காப்பியம்", "திருக்குறள்", "நூலகம்", "மரபியல்", "தமிழிலக்கணம்", "கல்விக்கழகம்",
+			"பெயர்கள்", "யாப்பிலக்கணம்", "உரையமைப்பும்", "உள்ளடக்கம்", "வாசிக்க", "ஆசிரியர்",
+			"வடிவம்", "விடுதலை", "வேற்றுமை", "புணர்ச்சி", "படிக்கும்போது", "வரையறைகளை"}
+		seed.InpStr = strs[rand.IntN(len(strs))]
+		str, ok := script.LetterSeqFrom(seed.InpStr)
+		if ok {
+			seed.LetterCount = str.Len()
+			seed.SylStrEg, seed.SylCount = script.SyllabifiedUStr(str, "-")
+			seed.Graph = createSylGraph(seed.InpStr, strings.Split(seed.SylStrEg, "-"))
 		}
 	}
 
