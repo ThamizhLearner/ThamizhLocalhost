@@ -1,7 +1,7 @@
 :root {
    --page-background: mintcream;
    --font-color: indigo;
-   --font: monospace;
+   --font: sans-serif;
 }
 
 body {
