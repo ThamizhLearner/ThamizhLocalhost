@@ -94,6 +94,12 @@ ol {
 .stdTable h4 {
    padding: 0px 10px;
 }
+.stdTable tr:nth-child(odd) {
+   background-color: aliceblue;
+}
+.stdTable tr:nth-child(odd):hover {
+   background-color: lavender;
+}
 
 .table {
    text-align: center;
