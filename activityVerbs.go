@@ -409,8 +409,8 @@ func createCoreTenseSuffixes() [8][4]script.LetterSeq {
 var gPronounInfoList = []pronounInfo{
 	{Id: "1s", Names: []string{"நான்"}, Idam: "தன்மை", Paal: "ஆண்பால் | பெண்பால்", Thinai: "உயர்திணை", En: "ஒருமை"},
 	{Id: "1p", Names: []string{"நாங்கள்", "நாம்"}, Idam: "தன்மை", Paal: "பலர்பால்", Thinai: "உயர்திணை", En: "பன்மை"},
-	{Id: "2s", Names: []string{"நீ", "நீம்"}, Idam: "முன்னிலை", Paal: "ஆண்பால் | பெண்பால்", Thinai: "உயர்திணை", En: "ஒருமை"},
-	{Id: "2p", Names: []string{"நீங்கள்"}, Idam: "முன்னிலை", Paal: "பலர்பால்", Thinai: "உயர்திணை", En: "பன்மை"},
+	{Id: "2s", Names: []string{"நீ"}, Idam: "முன்னிலை", Paal: "ஆண்பால் | பெண்பால்", Thinai: "உயர்திணை", En: "ஒருமை"},
+	{Id: "2p", Names: []string{"நீங்கள்", "நீம்"}, Idam: "முன்னிலை", Paal: "பலர்பால்", Thinai: "உயர்திணை", En: "பன்மை"},
 	{Id: "3sm", Names: []string{"அவன்", "இவன்", "எவன்"}, Idam: "படர்க்கை", Paal: "ஆண்பால்", Thinai: "உயர்திணை", En: "ஒருமை"},
 	{Id: "3sf", Names: []string{"அவள்", "இவள்", "எவள்"}, Idam: "படர்க்கை", Paal: "பெண்பால்", Thinai: "உயர்திணை", En: "ஒருமை"},
 	{Id: "3sh", Names: []string{"அவர்", "இவர்", "எவர்"}, Idam: "படர்க்கை", Paal: "ஆண்பால் | பெண்பால்", Thinai: "உயர்திணை", En: "ஒருமை"},
