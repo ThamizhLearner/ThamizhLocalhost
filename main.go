@@ -48,8 +48,9 @@ func setupServer() {
 		w.WriteHeader(http.StatusNotFound)
 	})
 	http.HandleFunc("GET /{activity}", activityPresenter)
-	fs := http.FileServer(http.Dir("style"))
-	http.Handle("GET /style.css", fs)
+	fs := http.FileServer(http.Dir("."))
+	http.Handle("GET /style/style.css", fs)
+	http.Handle("GET /robots.txt", fs)
 }
 
 func defaultActivityPresenter(w http.ResponseWriter, r *http.Request) {
