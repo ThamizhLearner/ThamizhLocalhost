@@ -49,7 +49,19 @@ func setupServer() {
 	})
 	http.HandleFunc("GET /{activity}", activityPresenter)
 	http.Handle("GET /style.css", http.FileServer(http.Dir("style")))
-	http.Handle("GET /robots.txt", http.FileServer(http.Dir(".")))
+	http.Handle("GET /robots.txt", serveLogger(http.FileServer(http.Dir("."))))
+}
+
+func serveLogger(handler http.Handler) http.Handler {
+	if chatterOn {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			fmt.Println("robots.txt")
+			// Pass control to the original handler
+			handler.ServeHTTP(w, r)
+		})
+	}
+
+	return handler
 }
 
 func defaultActivityPresenter(w http.ResponseWriter, r *http.Request) {
