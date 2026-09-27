@@ -103,13 +103,13 @@ func createThirukkuralRythmTable(k string) SimpleTable {
 			continue
 		}
 		ls := script.MustLetterSeqFrom(str)
-		captures := kural2.CaptureRhythm(ls, i == 6)
-		key := kural2.CreateKey(captures)
+		captures := kural2.ToAcaaiCaptures(ls, i == 6)
+		key := kural2.CreateRhymeKey(captures)
 		baseRhythm := rhythmBaseMap[key]
-		row[1] = kural2.RhythmBreakup(captures)
-		row[2] = kural2.GetRhythmBeats(captures, false)
+		row[1] = kural2.AcaaiFragSeq2UStr(captures)
+		row[2] = kural2.AcaaiSeq2UStr(captures, false)
 		row[3] = baseRhythm.UStr
-		row[4] = kural2.RhythmBreakup(baseRhythm.Captures)
+		row[4] = kural2.AcaaiFragSeq2UStr(baseRhythm.Captures)
 	}
 
 	return t
@@ -188,8 +188,8 @@ func createRhythmTable() SimpleTable {
 		rhythm := rhythmBaseMap[k]
 		row[0] = rhythm.UStr
 		row[1], _ = script.SyllabifiedUStr(script.MustLetterSeqFrom(rhythm.UStr), "-")
-		row[2] = kural2.GetRhythmBeats(rhythm.Captures, false)
-		row[3] = kural2.RhythmBreakup(rhythm.Captures)
+		row[2] = kural2.AcaaiSeq2UStr(rhythm.Captures, false)
+		row[3] = kural2.AcaaiFragSeq2UStr(rhythm.Captures)
 	}
 
 	return t
