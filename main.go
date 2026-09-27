@@ -55,7 +55,7 @@ func setupServer() {
 func serveLogger(handler http.Handler) http.Handler {
 	if chatterOn {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			fmt.Println("robots.txt")
+			fmt.Println("-- robots.txt")
 			// Pass control to the original handler
 			handler.ServeHTTP(w, r)
 		})
@@ -94,5 +94,5 @@ func activityPresenter(w http.ResponseWriter, r *http.Request) {
 
 // Gets called by 3rd-party keep-alive service!
 func pingResponder(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Ping'd")
+	fmt.Println(" Ping'd")
 }

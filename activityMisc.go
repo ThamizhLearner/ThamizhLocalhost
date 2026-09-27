@@ -2,9 +2,13 @@ package main
 
 import (
 	"html/template"
+	"maps"
 	"net/http"
+	"slices"
+	"sort"
 
 	script "github.com/ThamizhLearner/Thamizh"
+	kural2 "github.com/ThamizhLearner/ThamizhLocalhost/kural"
 )
 
 type miscActivity struct{}
@@ -13,16 +17,68 @@ func (a miscActivity) GetID() string   { return "Misc" }
 func (a miscActivity) GetDesc() string { return "Uncategorized cache" }
 func (a miscActivity) Respond(w http.ResponseWriter, r *http.Request) {
 	seed := struct {
-		InfoTable   SimpleTable
-		NerTable    SimpleTable
-		NiraiTable  SimpleTable
-		RhythmTable SimpleTable
-		CVTable     SimpleTable
-		VerbGraph   string
-	}{finalTable2(), createNerTable(), createNiraiTable(), createRhythmTable(), compositeLetters(), createVerbGraph()}
+		InfoTable        SimpleTable
+		NerTable         SimpleTable
+		NiraiTable       SimpleTable
+		Class1RhymeTable SimpleTable
+		Class2RhymeTable SimpleTable
+		Class3RhymeTable SimpleTable
+		Class4RhymeTable SimpleTable
+		CVTable          SimpleTable
+		VerbGraph        string
+	}{finalTable2(), createNerTable(), createNiraiTable(),
+		class1RhymeTable(), class2RhymeTable(), class3RhymeTable(), class4RhymeTable(),
+		compositeLetters(), createVerbGraph()}
 
 	var tmpl = template.Must(template.ParseFiles("tmpls/index.tmpl", "tmpls/misc.tmpl"))
 	tmpl.Execute(w, seed)
+}
+
+func class1RhymeTable() SimpleTable {
+	return rhymeTable("ஓரசைச்சீர் (ஓர் + அசை + சீர்)", kural2.GetSortedClass1RhymeMap())
+}
+
+func class2RhymeTable() SimpleTable {
+	return rhymeTable("ஈரசைச்சீர் (ஈர் + அசை + சீர்)", kural2.GetSortedClass2RhymeMap())
+}
+
+func class3RhymeTable() SimpleTable {
+	return rhymeTable("மூவசைச்சீர் (மூ + அசை + சீர்)", kural2.GetSortedClass3RhymeMap())
+}
+
+func class4RhymeTable() SimpleTable {
+	return rhymeTable("நாலசைச்சீர் (நால் + அசை + சீர்)", kural2.GetSortedClass4RhymeMap())
+}
+
+func rhymeTable(title string, ceerMap map[string]kural2.Ceer) SimpleTable {
+	var t = SimpleTable{
+		Title:       title,
+		ColInfoList: []ColInfo{{"வாய்ப்பாடு", 1}, {"Syllabified", 1}, {"Structure", 1}, {"அசை spans", 1}},
+		Cells:       make([][]string, len(ceerMap)),
+	}
+	keys := slices.Collect(maps.Keys(ceerMap))
+
+	// Sort the keys (which are encoded as sequence of indices into [நேர், நிரை, நேர்பு, நிரைபு])
+	sort.Slice(keys, func(i, j int) bool {
+		a, b := reversed(keys[i]), reversed(keys[j]) // Reversed to match the way அசை sequences are ordered!
+		la, lb := len(a), len(b)
+		if la == lb {
+			return a < b
+		}
+		return la < lb
+	})
+
+	for r, k := range keys {
+		row := make([]string, 4)
+		t.Cells[r] = row
+		rhythm := ceerMap[k]
+		row[0] = rhythm.UStr
+		row[1], _ = script.SyllabifiedUStr(script.MustLetterSeqFrom(rhythm.UStr), "-")
+		row[2] = kural2.AcaaiSeq2UStr(rhythm.Captures, false)
+		row[3] = kural2.AcaaiFragSeq2UStr(rhythm.Captures)
+	}
+
+	return t
 }
 
 func compositeLetters() SimpleTable {
