@@ -84,7 +84,12 @@ func activityPresenter(w http.ResponseWriter, r *http.Request) {
 				fmt.Printf("POST %s\n", id)
 			}
 		} else {
-			fmt.Printf("GET %s\n", id)
+			if id == "Verbs" {
+				reqVerb := strings.TrimSpace(r.FormValue(`verb`))
+				fmt.Printf("GET %s; %s\n", id, reqVerb)
+			} else {
+				fmt.Printf("GET %s\n", id)
+			}
 		}
 	}
 
