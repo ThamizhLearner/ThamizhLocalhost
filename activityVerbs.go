@@ -30,7 +30,9 @@ func (a verbsActivity) Respond(w http.ResponseWriter, r *http.Request) {
 	} else {
 		reqVSeq, ok := script.LetterSeqFrom(reqVerb)
 		if !ok {
-			fmt.Fprint(w, "Not a valid verb")
+			msg := "Invalid Query: Expected a Thamizh letter sequence"
+			fmt.Fprint(w, msg)              // Response
+			fmt.Printf(" Verbs: %s\n", msg) // Log
 			return
 		}
 		// Verify the given verb is in the list
@@ -41,7 +43,9 @@ func (a verbsActivity) Respond(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		if verbIdx == -1 {
-			fmt.Fprint(w, "Specified verb not found")
+			msg := "Invalid Query: Requested verb not found"
+			fmt.Fprint(w, msg)              // Response
+			fmt.Printf(" Verbs: %s\n", msg) // Log
 			return
 		}
 	}
