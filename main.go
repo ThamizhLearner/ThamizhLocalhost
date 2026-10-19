@@ -14,11 +14,11 @@ func main() {
 	var addr = "localhost:8080"
 	if len(os.Args) == 2 {
 		if os.Args[1] == "Host@Render" {
-			port := os.Getenv("PORT")
+			port := os.Getenv("PORT") // [Server environment variable]
 			fmt.Printf("%s requested using port %s\n", os.Args[1], port)
 			addr = "0.0.0.0:10000"
 
-			// Chatter mode!
+			// Chatter mode! [Server custom environment variable]
 			chatterOn = os.Getenv("Chatter") == "1"
 		}
 	}
@@ -30,9 +30,9 @@ func launchServer(addr string) {
 	fmt.Println("Server started @", addr)
 	if strings.HasPrefix(addr, "localhost:") {
 		fmt.Println()
-		fmt.Println("To access the server")
-		fmt.Println("1. Open your web browser")
-		fmt.Printf("2. Type \"%s\" in the address bar\n", addr)
+		fmt.Println("Connect to the server")
+		fmt.Println(" 1. Open your web browser")
+		fmt.Printf(" 2. Type \"%s\" in the address bar\n", addr)
 	}
 
 	if err := http.ListenAndServe(addr, nil); err != nil {
